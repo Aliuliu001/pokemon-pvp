@@ -140,7 +140,9 @@
 
         window.buildDeck = function() {
             window.globalDeck = [];
-            var baseData = [];
+            var fronts = [];
+            var backs = [];
+            
             for (var i=0; i<window.MAX_ROWS; i++) {
                 var node0 = document.querySelector(`input[data-row="${i}"][data-col="0"]`);
                 var node1 = document.querySelector(`input[data-row="${i}"][data-col="1"]`);
@@ -156,17 +158,27 @@
                 var bText = node3 ? node3.value.trim() : '';
                 var bTime = node4 ? node4.value.trim() : '';
 
-                // Chỉ đưa vào bộ bài nếu có dữ liệu mặt trước (fId hoặc fWord)
                 if (fId || fWord) {
-                    baseData.push({ type: 'normal', fId, fWord, bImgId, bText, bTime });
+                    fronts.push({ fId, fWord });
+                    backs.push({ bImgId, bText, bTime });
                 }
             }
 
-            if (baseData.length === 0) {
-                baseData = window.DEFAULT_JSON_DATA.map(function(item) {
-                    return Object.assign({}, item, { type: 'normal' });
-                });
+            if (fronts.length === 0) {
+                fronts = window.DEFAULT_JSON_DATA.map(item => ({ fId: item.fId, fWord: item.fWord }));
+                backs = window.DEFAULT_JSON_DATA.map(item => ({ bImgId: item.bImgId, bText: item.bText, bTime: item.bTime }));
             }
+
+            backs.sort(() => Math.random() - 0.5);
+
+            var baseData = fronts.map((front, index) => ({
+                type: 'normal',
+                fId: front.fId,
+                fWord: front.fWord,
+                bImgId: backs[index].bImgId,
+                bText: backs[index].bText,
+                bTime: backs[index].bTime
+            }));
 
             if (baseData.length > 0) {
                 window.globalDeck = [...baseData].sort(() => Math.random() - 0.5);
@@ -199,6 +211,7 @@
                 if (!c.used) window.globalDeck.push(c);
             });
             window.currentHand = [];
+            window.readCards = new Set();
             
             var loopGuard = 0; 
             
@@ -252,10 +265,12 @@
                 
                 var starBadge = cardObj.isSpecial ? `<div class="absolute -top-3 -right-3 text-3xl drop-shadow-md z-[70]">⭐</div>` : '';
                 var numberBadge = `<div class="absolute -top-3 -left-3 w-8 h-8 md:w-10 md:h-10 bg-slate-800 border-2 border-white rounded-full flex items-center justify-center text-white font-black text-sm md:text-xl shadow-lg z-[70] tarot-font">${idx + 1}</div>`;
+                var readMarker = `<div id="read-marker-${idx}" class="absolute -bottom-3 -right-3 w-8 h-8 md:w-10 md:h-10 bg-green-500 border-2 border-white rounded-full items-center justify-center text-white font-black text-sm md:text-xl shadow-lg z-[80] hidden transition-all duration-300">✅</div>`;
 
                 inner.innerHTML = `
                     ${numberBadge}
                     ${starBadge}
+                    ${readMarker}
                     <div class="absolute inset-0 backface-hidden rounded-xl card-cover flex flex-col justify-center items-center p-2 border-[4px] md:border-[6px] bg-slate-800 transition-all duration-300 ${extraClass}">
                         <div class="w-[100%] h-[100%] bg-white rounded-lg shadow-inner flex flex-col items-center justify-center p-1 border-2 border-slate-200 relative overflow-hidden">
                             ${content}
@@ -270,6 +285,29 @@
                 card.addEventListener('click', () => {
                     if (window.isGameOver) return;
                     if (!window.isGameStarted) { if (window.GLOBAL_TIMER_ENABLED) window.startTimer(); else { window.isGameStarted = true; document.getElementById('global-status').classList.add('hidden'); } }
+                    
+                    if (!window.readCards.has(idx)) {
+                        window.readCards.add(idx);
+                        var rm = document.getElementById(`read-marker-${idx}`);
+                        if (rm) rm.classList.replace('hidden', 'flex');
+                        
+                        card.classList.add('animate-pulse');
+                        setTimeout(() => card.classList.remove('animate-pulse'), 500);
+                        
+                        if (window.readCards.size === window.currentHand.length) {
+                            window.playSound('defuse'); // Or any ready sound
+                        } else {
+                            window.playSound('tick');
+                        }
+                        return;
+                    }
+
+                    if (window.readCards.size < window.currentHand.length) {
+                        card.classList.add('animate-shake');
+                        setTimeout(() => card.classList.remove('animate-shake'), 500);
+                        return;
+                    }
+
                     window.playSound('flip');
                     window.openModal(cardObj, idx);
                 });
