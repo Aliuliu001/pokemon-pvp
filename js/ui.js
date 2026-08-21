@@ -104,6 +104,8 @@
             if(document.getElementById('setting-global-time')) document.getElementById('setting-global-time').value = window.GLOBAL_GAME_TIME;
             if(document.getElementById('setting-hp-t1')) document.getElementById('setting-hp-t1').value = window.TEAM1_MAX_HP;
             if(document.getElementById('setting-hp-t2')) document.getElementById('setting-hp-t2').value = window.TEAM2_MAX_HP;
+            if(document.getElementById('setting-bg-image')) document.getElementById('setting-bg-image').value = localStorage.getItem('pokemonClashBgImage') || '';
+            if(document.getElementById('setting-bg-music')) document.getElementById('setting-bg-music').value = localStorage.getItem('pokemonClashBgmUrl') || '';
             
             window.renderGrid(parsedData);
             window.buildDeck();
@@ -260,8 +262,7 @@
             window.renderSpecialCardsModal();
         };
 
-        // --- AUDIO SYSTEM HTML5 ---
-        window.BGM_URL = "https://cdn.pixabay.com/download/audio/2022/01/18/audio_d0a13f69d2.mp3?filename=piano-moment-9835.mp3"; 
+        // --- AUDIO SYSTEM HTML5 ---        window.BGM_URL = localStorage.getItem("pokemonClashBgmUrl") || "assets/music/bgm.mp3"; 
 
         window.bgMusic = new Audio(window.BGM_URL);
         window.bgMusic.loop = true;

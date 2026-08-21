@@ -1,6 +1,12 @@
 ﻿
-        (function() {
-            var bgExtensions = ['jpg', 'png', 'jpeg', 'gif', 'webp'];
+        
+        window.applyBackground = function() {
+            var savedBg = localStorage.getItem("pokemonClashBgImage");
+            if (savedBg && savedBg.trim() !== "") {
+                document.body.style.backgroundImage = "url(" + savedBg + ")";
+                return;
+            }
+            var bgExtensions = ["jpg", "png", "jpeg", "gif", "webp"];
             var bgFound = false;
             for (var i = 0; i < bgExtensions.length; i++) {
                 var ext = bgExtensions[i];
@@ -8,14 +14,16 @@
                 img.onload = (function(e) {
                     return function() {
                         if (!bgFound) {
-                            document.body.style.backgroundImage = "url('background." + e + "')";
+                            document.body.style.backgroundImage = "url(background." + e + ")";
                             bgFound = true;
                         }
                     };
                 })(ext);
                 img.src = "background." + ext;
             }
-        })();
+        };
+        window.applyBackground();
+
     
 
         var escapeHTML = function(str) {

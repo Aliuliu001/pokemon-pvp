@@ -228,6 +228,29 @@
                 localStorage.setItem('pokemonClashHp1', window.TEAM1_MAX_HP);
                 localStorage.setItem('pokemonClashHp2', window.TEAM2_MAX_HP);
 
+                var bgImageUrl = document.getElementById('setting-bg-image')?.value.trim();
+                if (bgImageUrl) {
+                    localStorage.setItem('pokemonClashBgImage', bgImageUrl);
+                    window.applyBackground && window.applyBackground();
+                } else {
+                    localStorage.removeItem('pokemonClashBgImage');
+                    window.applyBackground && window.applyBackground();
+                }
+
+                var bgmUrl = document.getElementById('setting-bg-music')?.value.trim();
+                if (bgmUrl) {
+                    localStorage.setItem('pokemonClashBgmUrl', bgmUrl);
+                    window.BGM_URL = bgmUrl;
+                } else {
+                    localStorage.removeItem('pokemonClashBgmUrl');
+                    window.BGM_URL = 'assets/music/bgm.mp3';
+                }
+                if (window.bgMusic) {
+                    var wasPlaying = window.isMusicPlaying;
+                    window.bgMusic.src = window.BGM_URL;
+                    if (wasPlaying) window.bgMusic.play().catch(e => console.log(e));
+                }
+
                 var modal = document.getElementById('settings-modal');
                 if(modal) { modal.classList.add('hidden'); modal.classList.remove('flex'); }
                 window.loadData(); window.initGame();
