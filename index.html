@@ -1,0 +1,384 @@
+﻿<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pokemon Castle Battle</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body class="p-1 md:p-2 pb-6 flex flex-col items-center relative h-screen">
+
+    <script src="script.js"></script>
+
+    <div class="w-full flex flex-col items-center justify-start z-10 pointer-events-none mt-4 shrink-0 drop-shadow-xl">
+        <h1 id="main-title" class="text-4xl md:text-6xl font-black tarot-font text-white tracking-widest text-center" style="text-shadow: 2px 2px 0 #000, -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 2px 4px 5px rgba(0,0,0,0.8);">POKEMON CASTLE BATTLE</h1>
+        <p id="global-status" class="hidden text-xl md:text-4xl text-slate-100 font-black animate-pulse mt-2 pointer-events-auto drop-shadow-md z-50"></p>
+    </div>
+
+    <!-- BLOOD PACT CHAINS (WAVY OVERLAPPING DESIGN) -->
+    <div id="blood-pact-container" class="absolute inset-x-0 top-[25%] md:top-[30%] h-32 md:h-48 z-10 pointer-events-none flex items-center justify-center overflow-visible">
+        <svg id="blood-pact-chain-1" class="hidden absolute w-full h-full opacity-0 transition-opacity duration-500 filter drop-shadow-[0_0_10px_rgba(239,68,68,0.8)]" preserveAspectRatio="none" viewBox="0 0 1000 100">
+            <path d="M0,50 Q125,-30 250,50 T500,50 T750,50 T1000,50" fill="none" stroke="#ef4444" stroke-width="12" stroke-dasharray="25 15" stroke-linecap="round" />
+            <path d="M0,50 Q125,-30 250,50 T500,50 T750,50 T1000,50" fill="none" stroke="#7f1d1d" stroke-width="4" stroke-dasharray="25 15" stroke-linecap="round" />
+        </svg>
+        <svg id="blood-pact-chain-2" class="hidden absolute w-full h-full opacity-0 transition-opacity duration-500 filter drop-shadow-[0_0_10px_rgba(239,68,68,0.8)]" preserveAspectRatio="none" viewBox="0 0 1000 100">
+            <path d="M0,50 Q125,130 250,50 T500,50 T750,50 T1000,50" fill="none" stroke="#ef4444" stroke-width="12" stroke-dasharray="25 15" stroke-linecap="round" />
+            <path d="M0,50 Q125,130 250,50 T500,50 T750,50 T1000,50" fill="none" stroke="#7f1d1d" stroke-width="4" stroke-dasharray="25 15" stroke-linecap="round" />
+        </svg>
+    </div>
+
+    <div id="battle-arena" class="w-full max-w-7xl flex-1 flex flex-col justify-between items-center mt-2 z-10 relative">
+        <div class="w-full flex justify-between items-stretch px-4 md:px-12 relative flex-1 min-h-[40vh] md:min-h-[50vh]">
+            
+            <!-- TEAM 1 -->
+            <div id="team1-base" class="relative w-1/3 flex flex-col items-center justify-end pb-8 group transition-all duration-500 pt-16">
+                <div class="spotlight"></div>
+                <div id="team1-select-container" class="absolute top-0 px-3 py-1.5 rounded-lg w-[95%] md:w-3/4 max-w-[220px] flex justify-center shadow-[0_5px_15px_rgba(0,0,0,0.5)] z-20 transition-colors duration-300">
+                    <select id="team1-select" class="text-xs sm:text-sm md:text-base font-black tarot-font tracking-wider bg-transparent outline-none cursor-pointer text-center w-full truncate"></select>
+                </div>
+                <div class="relative w-full flex flex-col justify-end items-center z-20">
+                    <div id="team1-status-icons" class="absolute -top-12 flex flex-wrap gap-1 z-40 pointer-events-none justify-center w-[150%]">
+                        <div id="team1-icon-sleep" class="hidden relative text-3xl md:text-4xl filter drop-shadow-md animate-pulse">💤<span class="text-[10px] text-white absolute -bottom-1 -right-2 font-black bg-black/60 rounded px-1"></span></div>
+                        <div id="team1-icon-poison" class="hidden text-3xl md:text-4xl filter drop-shadow-md animate-pulse">☠️</div>
+                        <div id="team1-icon-blind" class="hidden text-3xl md:text-4xl filter drop-shadow-md animate-bounce">👁️‍🗨️</div>
+                        <div id="team1-icon-mimic" class="hidden relative text-3xl md:text-4xl filter drop-shadow-md animate-pulse">🎭<span class="text-[10px] text-white absolute -bottom-1 -right-2 font-black bg-black/60 rounded px-1"></span></div>
+                        <div id="team1-icon-sabotage" class="hidden relative text-3xl md:text-4xl filter drop-shadow-md animate-pulse">💣<span class="text-[10px] text-white absolute -bottom-1 -right-2 font-black bg-black/60 rounded px-1"></span></div>
+                    </div>
+                    <div id="team1-shield-container" class="absolute inset-[-20px] z-30 pointer-events-none opacity-0 scale-150 transition-all duration-500 flex items-center justify-center">
+                        <span id="team1-shield-icon" class="text-6xl md:text-8xl drop-shadow-[0_0_25px_rgba(59,130,246,1)] filter transition-all duration-300">🛡️</span>
+                    </div>
+                    <div id="team1-sad-bubbles" class="absolute inset-0 pointer-events-none z-30 flex justify-center"></div>
+                    <div id="team1-fireworks" class="absolute inset-[-40px] hidden z-0 pointer-events-none"></div>
+                    <div class="relative z-20 w-32 h-32 md:w-48 md:h-48 transform transition-transform group-hover:scale-110">
+                        <div class="w-full h-full" style="transform: scaleX(-1);">
+                            <img id="team1-avatar" src="" class="w-full h-full object-contain drop-shadow-[0_15px_15px_rgba(0,0,0,0.8)]" alt="Avatar">
+                        </div>
+                    </div>
+                    <div id="team1-hp-blocks" class="hp-blocks-container"></div>
+                </div>
+            </div>
+
+            <!-- CENTER -->
+            <div class="absolute left-1/2 bottom-20 md:bottom-28 transform -translate-x-1/2 flex flex-col items-center justify-center z-10 pointer-events-none w-full max-w-sm">
+                <div id="game-timer-container" class="relative w-20 h-20 md:w-28 md:h-28 flex items-center justify-center hidden mb-2 transition-all duration-300 pointer-events-auto drop-shadow-[0_5px_10px_rgba(0,0,0,0.6)]">
+                    <svg class="absolute inset-0 w-full h-full" viewBox="0 0 100 100">
+                        <circle cx="50" cy="50" r="45" fill="rgba(15, 23, 42, 0.9)" stroke="#334155" stroke-width="8"></circle>
+                        <circle id="game-timer-progress" cx="50" cy="50" r="45" fill="none" stroke="#22c55e" stroke-width="8" stroke-linecap="round" class="timer-ring" stroke-dasharray="283" stroke-dashoffset="0"></circle>
+                    </svg>
+                    <span id="game-timer-text" class="relative z-10 text-xl md:text-3xl font-black text-white tarot-font tracking-wider">00:00</span>
+                </div>
+                <div class="relative flex items-center justify-center w-full mt-2">
+                    <div id="pb-turn-team1" class="absolute right-[70%] md:right-[110%] opacity-0 transform scale-50 transition-all duration-500 z-50">
+                        <img src="https://upload.wikimedia.org/wikipedia/commons/5/53/Pok%C3%A9_Ball_icon.svg" class="w-12 h-12 md:w-16 md:h-16 pokeball-img" alt="Turn">
+                    </div>
+                    <span class="text-4xl md:text-7xl font-black tarot-font text-white drop-shadow-[0_5px_10px_rgba(0,0,0,0.8)]" style="text-shadow: 2px 2px 0 #000, -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 3px 5px 10px rgba(0,0,0,0.8);">VS</span>
+                    <div id="pb-turn-team2" class="absolute left-[70%] md:left-[110%] opacity-0 transform scale-50 transition-all duration-500 z-50">
+                        <img src="https://upload.wikimedia.org/wikipedia/commons/5/53/Pok%C3%A9_Ball_icon.svg" class="w-12 h-12 md:w-16 md:h-16 pokeball-img" alt="Turn">
+                    </div>
+                </div>
+            </div>
+
+            <!-- TEAM 2 -->
+            <div id="team2-base" class="relative w-1/3 flex flex-col items-center justify-end pb-8 group transition-all duration-500 pt-16">
+                <div class="spotlight"></div>
+                <div id="team2-select-container" class="absolute top-0 px-3 py-1.5 rounded-lg w-[95%] md:w-3/4 max-w-[220px] flex justify-center shadow-[0_5px_15px_rgba(0,0,0,0.5)] z-20 transition-colors duration-300">
+                    <select id="team2-select" class="text-xs sm:text-sm md:text-base font-black tarot-font tracking-wider bg-transparent outline-none cursor-pointer text-center w-full truncate" dir="rtl"></select>
+                </div>
+                <div class="relative w-full flex flex-col justify-end items-center z-20">
+                    <div id="team2-status-icons" class="absolute -top-12 flex flex-wrap gap-1 z-40 pointer-events-none justify-center w-[150%]">
+                        <div id="team2-icon-sleep" class="hidden relative text-3xl md:text-4xl filter drop-shadow-md animate-pulse">💤<span class="text-[10px] text-white absolute -bottom-1 -right-2 font-black bg-black/60 rounded px-1"></span></div>
+                        <div id="team2-icon-poison" class="hidden text-3xl md:text-4xl filter drop-shadow-md animate-pulse">☠️</div>
+                        <div id="team2-icon-blind" class="hidden text-3xl md:text-4xl filter drop-shadow-md animate-bounce">👁️‍🗨️</div>
+                        <div id="team2-icon-mimic" class="hidden relative text-3xl md:text-4xl filter drop-shadow-md animate-pulse">🎭<span class="text-[10px] text-white absolute -bottom-1 -right-2 font-black bg-black/60 rounded px-1"></span></div>
+                        <div id="team2-icon-sabotage" class="hidden relative text-3xl md:text-4xl filter drop-shadow-md animate-pulse">💣<span class="text-[10px] text-white absolute -bottom-1 -right-2 font-black bg-black/60 rounded px-1"></span></div>
+                    </div>
+
+                    <div id="team2-shield-container" class="absolute inset-[-20px] z-30 pointer-events-none opacity-0 scale-150 transition-all duration-500 flex items-center justify-center">
+                        <span id="team2-shield-icon" class="text-6xl md:text-8xl drop-shadow-[0_0_25px_rgba(59,130,246,1)] filter transition-all duration-300">🛡️</span>
+                    </div>
+                    <div id="team2-sad-bubbles" class="absolute inset-0 pointer-events-none z-30 flex justify-center"></div>
+                    <div id="team2-fireworks" class="absolute inset-[-40px] hidden z-0 pointer-events-none"></div>
+                    <div class="relative z-20 w-32 h-32 md:w-48 md:h-48 transform transition-transform group-hover:scale-110">
+                        <div class="w-full h-full">
+                            <img id="team2-avatar" src="" class="w-full h-full object-contain drop-shadow-[0_15px_15px_rgba(0,0,0,0.8)]" alt="Avatar">
+                        </div>
+                    </div>
+                    <div id="team2-hp-blocks" class="hp-blocks-container"></div>
+                </div>
+            </div>
+            
+        </div>
+
+        <!-- CARDS -->
+        <div class="w-full flex flex-col items-center mt-4 md:mt-0 mb-4 md:mb-10 z-20 transition-all duration-300" id="hand-panel">
+            <h2 id="turn-indicator" class="text-3xl md:text-5xl font-black tarot-font text-white mb-8 md:mb-10 transition-all duration-300 text-center tracking-widest uppercase" style="text-shadow: 2px 2px 0 #000, -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 0 0 20px currentColor;">TEAM 1'S TURN</h2>
+            <div id="active-hand" class="flex flex-row justify-center gap-4 md:gap-10 w-full max-w-5xl h-[160px] sm:h-[200px] md:h-[260px]"></div>
+        </div>
+
+    </div>
+
+    <!-- UI TOOLS -->
+    <div class="fixed bottom-2 left-2 md:bottom-4 md:left-4 flex flex-row items-end gap-2 z-40 bg-slate-800/90 p-1.5 md:p-2 rounded-xl backdrop-blur-md border border-slate-500 shadow-xl">
+        <button id="btn-settings" class="w-8 h-8 md:w-10 md:h-10 bg-slate-800 hover:bg-slate-700 text-white rounded-full text-sm md:text-base transition-all duration-300 border border-slate-500 flex items-center justify-center shadow-lg hover:scale-105" title="Settings">⚙️</button>
+        <div class="relative group">
+            <button id="btn-special-mode" class="relative w-8 h-8 md:w-10 md:h-10 rounded-full transition-all duration-300 border border-slate-800 flex items-center justify-center shadow-lg bg-white overflow-hidden hover:scale-105 active:scale-95" title="Special Cards">
+                <div class="absolute top-0 left-0 w-full h-1/2 bg-red-500 pointer-events-none"></div>
+                <div class="absolute top-1/2 w-full h-1 bg-slate-800 transform -translate-y-1/2 pointer-events-none"></div>
+                <div class="relative w-2.5 h-2.5 md:w-3 md:h-3 bg-white border-[1.5px] border-slate-800 rounded-full z-10 transition-colors pointer-events-none group-hover:bg-yellow-300"></div>
+                <div id="pokeball-glow" class="absolute inset-[-10px] rounded-full shadow-[0_0_10px_#fde047] opacity-0 transition-opacity duration-300 pointer-events-none"></div>
+            </button>
+            <span id="special-mode-indicator" class="absolute -bottom-0 -right-0 w-2.5 h-2.5 md:w-3 md:h-3 rounded-full border border-slate-800 bg-red-500 transition-colors pointer-events-none z-50"></span>
+        </div>
+        <button id="btn-sound" class="w-8 h-8 md:w-10 md:h-10 bg-slate-800 hover:bg-slate-700 text-white rounded-full text-sm md:text-base transition-all duration-300 border border-slate-500 flex items-center justify-center shadow-lg hover:scale-105" title="Sound">🔇</button>
+        <button id="btn-reset" class="px-3 md:px-4 py-1.5 md:py-2 h-8 md:h-10 bg-rose-600 hover:bg-rose-500 text-white rounded-lg text-xs md:text-sm font-black transition-all border border-rose-400 shadow-lg ml-2 active:scale-95">RESTART</button>
+    </div>
+
+    <!-- SETTINGS MODAL -->
+    <div id="settings-modal" class="fixed inset-0 bg-black/90 z-[100] hidden flex-col items-center p-4">
+        <div class="bg-slate-800 p-4 md:p-6 rounded-2xl w-full max-w-5xl border-4 border-slate-600 shadow-[0_0_50px_rgba(0,0,0,0.5)] flex flex-col max-h-[90vh]">
+            <div class="text-center mb-4 shrink-0">
+                <h2 class="text-2xl md:text-3xl font-black text-transparent bg-clip-text bg-gradient-to-r from-yellow-300 to-yellow-500 tarot-font tracking-wider drop-shadow-md">UPDATE EXCEL DATA</h2>
+            </div>
+            
+            <div class="bg-slate-900 p-4 rounded-xl border border-slate-600 mb-3 flex flex-col gap-3 shadow-inner shrink-0">
+                <h3 class="text-yellow-400 font-bold text-sm md:text-base uppercase">⚙️ Game Settings</h3>
+                <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3">
+                    <div class="flex-1">
+                        <label class="text-slate-300 text-xs md:text-sm font-semibold block mb-1">Front-side:</label>
+                        <select id="setting-front-mode" class="w-full bg-slate-700 text-white text-sm p-2 rounded-lg outline-none border border-slate-500 cursor-pointer">
+                            <option value="both">Image & Text</option>
+                            <option value="image">Image Only</option>
+                            <option value="text">Text Only</option>
+                        </select>
+                    </div>
+                    <div class="flex-1">
+                        <label class="text-slate-300 text-xs md:text-sm font-semibold block mb-1">Back-side:</label>
+                        <select id="setting-back-mode" class="w-full bg-slate-700 text-white text-sm p-2 rounded-lg outline-none border border-slate-500 cursor-pointer">
+                            <option value="full">Image & Text</option>
+                            <option value="image_only">Image Only</option>
+                            <option value="text_only">Text Only</option>
+                            <option value="points">Buttons Only</option>
+                        </select>
+                    </div>
+                    <div class="flex-1">
+                        <label class="text-slate-300 text-xs md:text-sm font-semibold block mb-1">Team 1 HP (❤️):</label>
+                        <input type="number" id="setting-hp-t1" class="w-full bg-slate-700 text-white text-sm p-2 rounded-lg outline-none border border-slate-500" value="7" min="1" max="20">
+                    </div>
+                    <div class="flex-1">
+                        <label class="text-slate-300 text-xs md:text-sm font-semibold block mb-1">Team 2 HP (❤️):</label>
+                        <input type="number" id="setting-hp-t2" class="w-full bg-slate-700 text-white text-sm p-2 rounded-lg outline-none border border-slate-500" value="7" min="1" max="20">
+                    </div>
+                    <div class="flex-1">
+                        <label class="text-slate-300 text-xs md:text-sm font-semibold block mb-1">Timer:</label>
+                        <select id="setting-timer-enabled" class="w-full bg-slate-700 text-white text-sm p-2 rounded-lg outline-none border border-slate-500 cursor-pointer">
+                            <option value="on">On</option>
+                            <option value="off">Off</option>
+                        </select>
+                    </div>
+                    <div class="flex-1">
+                        <label class="text-slate-300 text-xs md:text-sm font-semibold block mb-1">Time (s/card):</label>
+                        <input type="number" id="setting-global-time" class="w-full bg-slate-700 text-white text-sm p-2 rounded-lg outline-none border border-slate-500" value="180" min="30">
+                    </div>
+                </div>
+            </div>
+
+            <div class="flex flex-col md:flex-row justify-between items-start md:items-end gap-3 mb-3 shrink-0">
+                <p class="text-slate-300 text-xs md:text-sm">
+                    Paste 5 columns from Excel here. <br>
+                    <b class="text-yellow-400">Note:</b> Empty Time column = No bomb timer for that card.
+                </p>
+                <div class="flex flex-wrap gap-2 w-full justify-end">
+                    <div class="flex items-center bg-slate-700 rounded-lg overflow-hidden border border-blue-500 shadow-inner">
+                        <select id="auto-col-select" class="bg-slate-800 text-yellow-400 px-2 py-1.5 outline-none text-xs sm:text-sm font-bold border-r border-slate-500 cursor-pointer">
+                            <option value="0">Col 1</option><option value="1">Col 2</option><option value="2">Col 3</option><option value="3">Col 4</option><option value="4">Col 5</option>
+                        </select>
+                        <input type="number" id="auto-start" class="bg-transparent text-yellow-300 w-12 sm:w-16 px-1 py-1.5 outline-none text-xs sm:text-sm font-bold text-center" placeholder="From">
+                        <span class="text-slate-400 text-xs px-1">➡️</span>
+                        <input type="number" id="auto-end" class="bg-transparent text-yellow-300 w-12 sm:w-16 px-1 py-1.5 outline-none text-xs sm:text-sm font-bold text-center border-r border-slate-500" placeholder="To">
+                        <button id="btn-auto-fill" class="bg-blue-600 hover:bg-blue-500 text-white px-2 sm:px-3 py-1.5 text-xs sm:text-sm font-bold transition-colors whitespace-nowrap">🪄 Auto Fill</button>
+                    </div>
+                    
+                    <div class="flex items-center bg-slate-700 rounded-lg overflow-hidden border border-amber-500 shadow-inner">
+                        <input type="number" id="quick-time-input" placeholder="Secs" class="bg-transparent text-amber-400 px-2 py-1.5 w-16 sm:w-20 outline-none text-xs sm:text-sm font-bold text-center" min="1" step="1" value="10">
+                        <button id="btn-fill-time" class="bg-amber-600 hover:bg-amber-500 text-white px-2 sm:px-3 py-1.5 text-xs sm:text-sm font-bold transition-colors border-l border-amber-500 whitespace-nowrap">⏱️ Fill Time</button>
+                    </div>
+                    
+                    <div class="flex items-center bg-slate-700 rounded-lg overflow-hidden border border-red-500 shadow-inner">
+                        <select id="clear-column-select" class="bg-transparent text-red-400 px-2 py-1.5 outline-none text-xs sm:text-sm font-bold border-r border-slate-500 cursor-pointer w-full md:w-auto">
+                            <option value="all" class="bg-slate-800 text-white">🗑️ Clear All</option>
+                            <option value="0" class="bg-slate-800 text-white">Clear Col 1</option>
+                            <option value="1" class="bg-slate-800 text-white">Clear Col 2</option>
+                            <option value="2" class="bg-slate-800 text-white">Clear Col 3</option>
+                            <option value="3" class="bg-slate-800 text-white">Clear Col 4</option>
+                            <option value="4" class="bg-slate-800 text-white">Clear Col 5</option>
+                        </select>
+                        <button id="btn-clear-table" class="bg-red-600 hover:bg-red-500 text-white px-3 sm:px-4 py-1.5 text-xs sm:text-sm font-bold transition-colors whitespace-nowrap">Clear</button>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="flex-1 overflow-y-auto overflow-x-hidden custom-scrollbar bg-slate-900 border border-slate-600 rounded-xl relative mt-2">
+                <table class="w-full text-left text-sm text-slate-300 border-collapse table-fixed">
+                    <thead class="sticky top-0 bg-slate-700 text-xs uppercase shadow-md z-10">
+                        <tr>
+                            <th class="px-1 py-3 border-b border-r border-slate-600 text-yellow-400 w-[12%] text-center">ID Front</th>
+                            <th class="px-2 py-3 border-b border-r border-slate-600 text-yellow-400 w-[20%]">Text Front</th>
+                            <th class="px-1 py-3 border-b border-r border-slate-600 text-green-400 w-[15%] text-center bg-slate-800/50">ID Back</th>
+                            <th class="px-2 py-3 border-b border-r border-slate-600 text-green-400 w-[43%] bg-slate-800/50">Text Back</th>
+                            <th class="px-1 py-3 border-b border-slate-600 text-red-400 w-[10%] text-center bg-slate-800/50">Time(s)</th>
+                        </tr>
+                    </thead>
+                    <tbody id="data-grid-body"></tbody>
+                </table>
+            </div>
+            
+            <div class="flex justify-end gap-3 mt-4 w-full shrink-0">
+                <button id="btn-export-html" class="px-5 py-2.5 bg-blue-600 hover:bg-blue-500 text-white rounded-xl font-bold transition-colors shadow-lg mr-auto">📥 Export HTML</button>
+                <button id="btn-close-settings" class="px-5 py-2.5 bg-slate-600 hover:bg-slate-500 text-white rounded-xl font-bold transition-colors">Cancel</button>
+                <button id="btn-save-settings" class="px-5 py-2.5 bg-green-600 hover:bg-green-500 text-white rounded-xl font-bold transition-colors shadow-lg">Save & Restart</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- SPECIAL CARDS SELECTION MODAL -->
+    <div id="special-cards-modal" class="fixed inset-0 bg-black/90 z-[100] hidden flex-col items-center justify-center p-4">
+        <div class="bg-slate-800 p-4 md:p-6 rounded-2xl w-full max-w-6xl border-4 border-slate-600 shadow-[0_0_50px_rgba(0,0,0,0.5)] flex flex-col max-h-[95vh] h-[90vh]">
+            <div class="text-center mb-4 shrink-0">
+                <h2 class="text-2xl md:text-3xl font-black text-transparent bg-clip-text bg-gradient-to-r from-yellow-300 to-yellow-500 tarot-font tracking-wider drop-shadow-md">BATTLE CARDS MANAGER</h2>
+                <p class="text-slate-300 text-sm md:text-base mt-2">Quản lý và điều chỉnh thông số cho các lá bài kỹ năng đặc biệt trong trận đấu.</p>
+            </div>
+            
+            <div class="flex items-center gap-2 mb-2 bg-slate-900 p-2 rounded-lg border border-slate-600 shrink-0 flex-wrap justify-center md:justify-start">
+                <span class="text-yellow-400 font-bold text-xs uppercase">Điền nhanh:</span>
+                <input type="number" id="bulk-val-input" class="w-12 md:w-16 bg-slate-700 text-white px-1 py-1 rounded text-xs text-center border border-slate-500" placeholder="Val">
+                <button onclick="window.bulkSetVal()" class="bg-blue-600 hover:bg-blue-500 text-white px-2 py-1 rounded text-xs font-bold">Set VAL</button>
+                <input type="number" id="bulk-qty-input" class="w-12 md:w-16 bg-slate-700 text-white px-1 py-1 rounded text-xs text-center border border-slate-500 ml-2" placeholder="Qty">
+                <button onclick="window.bulkSetQty()" class="bg-green-600 hover:bg-green-500 text-white px-2 py-1 rounded text-xs font-bold">Set QTY</button>
+                <button onclick="window.bulkClearQty()" class="bg-red-600 hover:bg-red-500 text-white px-2 py-1 rounded text-xs font-bold md:ml-auto">Clear QTY</button>
+            </div>
+
+            <div class="flex-1 overflow-auto custom-scrollbar border border-slate-600 rounded-lg w-full">
+                <table class="w-full min-w-[750px] text-left text-sm text-slate-300 border-collapse">
+                    <thead class="sticky top-0 bg-slate-700 text-[11px] uppercase shadow-md z-10 text-center text-yellow-400">
+                        <tr>
+                            <th class="px-1 py-3 border-b border-r border-slate-600 w-[5%]">⇅</th>
+                            <th class="px-2 py-3 border-b border-r border-slate-600 w-[20%]">Kỹ Năng</th>
+                            <th class="px-2 py-3 border-b border-r border-slate-600 w-[20%]">Hiệu Ứng</th>
+                            <th class="px-2 py-3 border-b border-r border-slate-600 w-[25%]">Ghi Chú & HDSD</th>
+                            <th class="px-2 py-3 border-b border-r border-slate-600 w-[15%] bg-slate-800/50">Chỉ Số (VAL)</th>
+                            <th class="px-2 py-3 border-b border-slate-600 w-[15%] bg-slate-800/50">SL (QTY)</th>
+                        </tr>
+                    </thead>
+                    <tbody id="special-cards-tbody">
+                        <!-- Rendered via JS -->
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="flex justify-end gap-3 mt-6 pt-4 border-t border-slate-600 shrink-0 w-full">
+                <button id="btn-close-special" class="px-6 py-3 bg-slate-600 hover:bg-slate-500 text-white rounded-xl font-bold transition-colors text-lg">Đóng</button>
+                <button id="btn-save-special" class="px-6 py-3 bg-gradient-to-r from-green-500 to-emerald-600 hover:from-green-400 hover:to-emerald-500 text-white rounded-xl font-bold transition-all shadow-[0_4px_15px_rgba(16,185,129,0.4)] text-lg hover:scale-105 active:scale-95">Lưu & Khởi Động Lại</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ZOOM MODAL -->
+    <div id="zoom-modal" class="fixed inset-0 bg-black/90 z-50 hidden flex-col items-center justify-center p-4 backdrop-blur-md">
+        <h2 id="modal-team-title" class="text-2xl md:text-5xl font-black text-white mb-4 tarot-font drop-shadow-[0_4px_10px_rgba(0,0,0,1)] tracking-widest transition-colors duration-300" style="text-shadow: 2px 2px 0 #000, -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000;"></h2>
+        
+        <div class="w-[90%] max-w-4xl relative modal-card mb-4">
+            <div id="modal-card-content" class="w-full aspect-[4/3] sm:aspect-video bg-fdf6e3 rounded-3xl border-8 flex flex-col p-4 shadow-[0_0_50px_rgba(0,0,0,0.8)] relative bg-white transition-colors duration-300 mx-auto">
+                <div id="fuse-container" class="hidden absolute -top-4 left-1/2 transform -translate-x-1/2 w-2/3 max-w-[300px] h-6 md:h-8 bg-slate-900 rounded-full border-4 border-slate-600 shadow-xl overflow-hidden z-40">
+                    <div id="fuse-bar" class="h-full bg-green-500 w-full transition-all duration-100 ease-linear ml-auto"></div>
+                    <div class="absolute inset-0 flex justify-center items-center text-xs md:text-base font-black text-white drop-shadow-md z-10" id="fuse-text">0.0s</div>
+                </div>
+                
+                <!-- BOMB BUTTON -->
+                <button id="btn-bomb" class="absolute -top-6 -right-4 md:-top-8 md:-right-6 z-50 hidden outline-none cursor-pointer">
+                    <div class="bomb-pulsing bg-slate-800 rounded-full w-16 h-16 md:w-20 md:h-20 flex items-center justify-center border-4 border-red-500 hover:bg-slate-700 transition-colors">
+                        <span class="text-4xl md:text-5xl drop-shadow-lg">💣</span>
+                    </div>
+                </button>
+
+                <div id="modal-content-area" class="w-full h-full flex flex-col gap-3 mt-4"></div>
+            </div>
+        </div>
+
+        <div class="w-[90%] max-w-4xl flex flex-col justify-center gap-4 mt-2">
+            <div id="judge-buttons-normal" class="hidden flex-row gap-4 w-full justify-center">
+                <button id="btn-action-attack" class="flex-1 max-w-[300px] py-4 bg-rose-600 hover:bg-rose-500 text-white rounded-2xl font-black text-xl md:text-2xl shadow-[0_10px_20px_rgba(225,29,72,0.5)] border-4 border-white transition-transform hover:scale-105 flex flex-col items-center leading-none">
+                    <span class="text-4xl mb-1">⚔️</span> ATTACK<br><span class="text-sm text-rose-200 mt-1 uppercase">-1 HP Enemy</span>
+                </button>
+                <button id="btn-action-repair" class="flex-1 max-w-[300px] py-4 bg-emerald-600 hover:bg-emerald-500 text-white rounded-2xl font-black text-xl md:text-2xl shadow-[0_10px_20px_rgba(16,185,129,0.5)] border-4 border-white transition-transform hover:scale-105 flex flex-col items-center leading-none">
+                    <span class="text-4xl flex items-end justify-center mb-1 text-green-300 drop-shadow-md">
+                        <span class="text-xl leading-none">✚</span><span class="text-5xl mx-0.5 leading-none">✚</span><span class="text-2xl leading-none">✚</span>
+                    </span> HEAL<br><span class="text-sm text-emerald-200 mt-1 uppercase">+1 HP Self</span>
+                </button>
+            </div>
+            
+            <div id="judge-buttons-special" class="hidden flex-row gap-4 w-full justify-center">
+                <!-- Dynamically rendered via JS -->
+            </div>
+        </div>
+    </div>
+
+    <!-- COIN FLIP MINIGAME MODAL -->
+    <div id="coin-modal" class="fixed inset-0 bg-black/90 z-[150] hidden flex-col items-center justify-center p-4 backdrop-blur-md">
+        <h2 id="coin-modal-title" class="text-3xl md:text-5xl text-yellow-400 font-black tarot-font mb-8 text-center animate-pulse drop-shadow-lg">DEFENSE: DODGE CHANCE!</h2>
+        
+        <div id="coins-wrapper" class="flex gap-4 justify-center mb-8">
+            <div class="relative w-16 h-16 md:w-24 md:h-24 perspective">
+                <div id="coin-inner-1" class="coin-inner w-full h-full relative transform-style-3d transition-transform duration-[2s]">
+                    <div class="absolute inset-0 backface-hidden bg-yellow-400 rounded-full border-[6px] border-yellow-600 flex items-center justify-center text-4xl shadow-[0_0_15px_rgba(250,204,21,1)]">👑</div>
+                    <div class="absolute inset-0 backface-hidden rotate-y-180 bg-slate-300 rounded-full border-[6px] border-slate-500 flex items-center justify-center text-4xl shadow-[0_0_15px_rgba(148,163,184,1)]">🦅</div>
+                </div>
+            </div>
+            <div class="relative w-16 h-16 md:w-24 md:h-24 perspective">
+                <div id="coin-inner-2" class="coin-inner w-full h-full relative transform-style-3d transition-transform duration-[2s]">
+                    <div class="absolute inset-0 backface-hidden bg-yellow-400 rounded-full border-[6px] border-yellow-600 flex items-center justify-center text-4xl shadow-[0_0_15px_rgba(250,204,21,1)]">👑</div>
+                    <div class="absolute inset-0 backface-hidden rotate-y-180 bg-slate-300 rounded-full border-[6px] border-slate-500 flex items-center justify-center text-4xl shadow-[0_0_15px_rgba(148,163,184,1)]">🦅</div>
+                </div>
+            </div>
+            <div class="relative w-16 h-16 md:w-24 md:h-24 perspective">
+                <div id="coin-inner-3" class="coin-inner w-full h-full relative transform-style-3d transition-transform duration-[2s]">
+                    <div class="absolute inset-0 backface-hidden bg-yellow-400 rounded-full border-[6px] border-yellow-600 flex items-center justify-center text-4xl shadow-[0_0_15px_rgba(250,204,21,1)]">👑</div>
+                    <div class="absolute inset-0 backface-hidden rotate-y-180 bg-slate-300 rounded-full border-[6px] border-slate-500 flex items-center justify-center text-4xl shadow-[0_0_15px_rgba(148,163,184,1)]">🦅</div>
+                </div>
+            </div>
+        </div>
+
+        <p id="coin-status" class="text-white text-xl md:text-3xl mb-8 font-bold text-center">Tung 3 đồng xu quyết định số phận!</p>
+        
+        <div id="coin-buttons" class="flex gap-4 w-full max-w-md justify-center">
+            <button id="btn-coin-heads" class="flex-1 py-4 bg-yellow-500 hover:bg-yellow-400 rounded-2xl font-black text-xl border-4 border-white shadow-lg text-slate-900 transition-transform hover:scale-105">👑 SẤP</button>
+            <button id="btn-coin-tails" class="flex-1 py-4 bg-slate-400 hover:bg-slate-300 rounded-2xl font-black text-xl border-4 border-white shadow-lg text-slate-900 transition-transform hover:scale-105">🦅 NGỬA</button>
+        </div>
+    </div>
+
+    <!-- WHEEL MINIGAME MODAL -->
+    <div id="wheel-modal" class="fixed inset-0 bg-black/90 z-[150] hidden flex-col items-center justify-center p-4 backdrop-blur-md">
+        <h2 id="wheel-modal-title" class="text-3xl md:text-5xl text-orange-500 font-black tarot-font mb-8 text-center animate-pulse drop-shadow-lg">EARTHQUAKE!</h2>
+        
+        <div class="wheel-container">
+            <div id="wheel-numbers-container" class="absolute inset-0"></div>
+            <div class="wheel-pointer-container">
+                <div id="wheel-pointer" class="wheel-pointer"></div>
+                <div class="wheel-center-dot"></div>
+            </div>
+        </div>
+
+        <p id="wheel-status" class="text-white text-xl md:text-3xl mb-8 font-bold text-center">Đang đo cường độ động đất...</p>
+    </div>
+
+    <!-- METRONOME MODAL -->
+    <div id="metronome-modal" class="fixed inset-0 bg-black/90 z-[150] hidden flex-col items-center justify-center p-4 backdrop-blur-md">
+        <h2 class="text-3xl md:text-5xl text-yellow-400 font-black tarot-font mb-8 text-center animate-pulse drop-shadow-lg">METRONOME CHỌN...</h2>
+        <div id="metronome-card-container" class="relative w-64 h-80 perspective">
+            <!-- Card injected here -->
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
