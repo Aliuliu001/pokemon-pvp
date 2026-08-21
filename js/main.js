@@ -90,6 +90,63 @@
                 });
             }
 
+            
+            var uploadBtn = document.getElementById('btn-upload-images');
+            if (uploadBtn) {
+                uploadBtn.addEventListener('change', function(e) {
+                    var files = e.target.files;
+                    if (!files || files.length === 0) return;
+                    
+                    var status = document.getElementById('upload-status');
+                    if(status) { status.classList.remove('hidden'); status.innerText = 'Processing ' + files.length + ' image(s)...'; }
+                    
+                    var processedCount = 0;
+                    for (var i = 0; i < files.length; i++) {
+                        (function(file) {
+                            var reader = new FileReader();
+                            reader.onload = function(event) {
+                                var img = new Image();
+                                img.onload = function() {
+                                    var canvas = document.createElement('canvas');
+                                    var maxDim = 400;
+                                    var width = img.width;
+                                    var height = img.height;
+                                    
+                                    if (width > height) {
+                                        if (width > maxDim) { height *= maxDim / width; width = maxDim; }
+                                    } else {
+                                        if (height > maxDim) { width *= maxDim / height; height = maxDim; }
+                                    }
+                                    
+                                    canvas.width = width;
+                                    canvas.height = height;
+                                    var ctx = canvas.getContext('2d');
+                                    ctx.drawImage(img, 0, 0, width, height);
+                                    
+                                    var base64Str = canvas.toDataURL('image/png');
+                                    
+                                    var fileNameNoExt = file.name.substring(0, file.name.lastIndexOf('.')) || file.name;
+                                    window.imagesPool[fileNameNoExt] = base64Str;
+                                    
+                                    processedCount++;
+                                    if (processedCount === files.length) {
+                                        try {
+                                            localStorage.setItem('pokemonClashImagePool', JSON.stringify(window.imagesPool));
+                                            if(status) { status.innerText = 'Saved ' + files.length + ' images to memory!'; setTimeout(() => status.classList.add('hidden'), 3000); }
+                                            window.buildDeck();
+                                        } catch(e) {
+                                            if(status) { status.innerText = 'Error: Storage full! (Max 5MB)'; status.classList.replace('text-yellow-400', 'text-red-400'); }
+                                        }
+                                    }
+                                };
+                                img.src = event.target.result;
+                            };
+                            reader.readAsDataURL(file);
+                        })(files[i]);
+                    }
+                });
+            }
+
             attachBtn('btn-export-html', 'click', () => {
                 var exportData = [];
                 for(var i = 0; i < window.MAX_ROWS; i++) {
@@ -125,7 +182,7 @@
 
                 var scriptEl = document.createElement('script');
                 scriptEl.id = 'injected-state';
-                scriptEl.textContent = `window.INJECTED_GAME_STATE = ${JSON.stringify({ data: exportData, settings: exportSettings })};`;
+                scriptEl.textContent = `window.INJECTED_GAME_STATE = ${JSON.stringify({ data: exportData, settings: exportSettings, imagesPool: window.imagesPool || {} })};`;
                 clone.querySelector('head').appendChild(scriptEl);
 
                 var htmlContent = "<!DOCTYPE html>\n" + clone.outerHTML;

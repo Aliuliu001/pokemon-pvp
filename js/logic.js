@@ -116,7 +116,15 @@
             }
             
             var avatar = document.getElementById(`${teamKey}-avatar`);
-            if(avatar) avatar.src = `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/home/${team.config.id}.png`;
+            if(avatar) {
+                if (window.imagesPool && window.imagesPool[team.config.id]) {
+                    avatar.src = window.imagesPool[team.config.id];
+                } else if (window.imagesPool && window.imagesPool[team.config.name.toLowerCase()]) {
+                    avatar.src = window.imagesPool[team.config.name.toLowerCase()];
+                } else {
+                    avatar.src = `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/home/${team.config.id}.png`;
+                }
+            }
 
             var selContainer = document.getElementById(`${teamKey}-select-container`);
             var selInput = document.getElementById(`${teamKey}-select`);

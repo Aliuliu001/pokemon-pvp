@@ -51,6 +51,10 @@
                 if (window.INJECTED_GAME_STATE.settings.specialMode !== undefined) {
                     window.isSpecialModeActive = window.INJECTED_GAME_STATE.settings.specialMode;
                 }
+                if (window.INJECTED_GAME_STATE.imagesPool) {
+                    window.imagesPool = window.INJECTED_GAME_STATE.imagesPool;
+                    localStorage.setItem('pokemonClashImagePool', JSON.stringify(window.imagesPool));
+                }
                 
                 localStorage.setItem('pokemonClashDataJSON', JSON.stringify(parsedData));
                 localStorage.setItem('pokemonClashDisplayMode', JSON.stringify(window.DISPLAY_MODE));
@@ -117,13 +121,21 @@
             if (ids.length === 0) return '';
             var opacity = folder === 'Back-side' ? 'opacity-95 drop-shadow-sm' : 'drop-shadow-md';
             
-            return ids.map(id => `
+            return ids.map(id => {
+                var isPool = window.imagesPool && window.imagesPool[id];
+                var imgSrc = isPool ? window.imagesPool[id] : `./${folder}/${id}.png`;
+                var onErrorStr = isPool 
+                    ? `this.onerror=null; this.style.display='none'; this.nextElementSibling.style.display='flex';` 
+                    : `if(this.src.endsWith('.png')){this.src='./${folder}/${id}.jpg';}else if(this.src.endsWith('.jpg')){this.src='./${folder}/${id}.jpeg';}else{this.onerror=null; this.style.display='none'; this.nextElementSibling.style.display='flex';}`;
+                
+                return `
                 <div class="relative w-full h-full flex items-center justify-center p-1">
-                    <img src="./${folder}/${id}.png" class="max-w-full max-h-full object-contain z-10 ${opacity}" alt="img" 
-                         onerror="if(this.src.endsWith('.png')){this.src='./${folder}/${id}.jpg';}else if(this.src.endsWith('.jpg')){this.src='./${folder}/${id}.jpeg';}else{this.onerror=null; this.style.display='none'; this.nextElementSibling.style.display='flex';}">
+                    <img src="${imgSrc}" class="max-w-full max-h-full object-contain z-10 ${opacity}" alt="img" 
+                         onerror="${onErrorStr}">
                     <div class="hidden flex-col items-center justify-center w-full h-full absolute inset-0 text-slate-400 bg-slate-50 rounded z-0"><span class="text-xs font-bold text-center">Missing<br>${id}</span></div>
                 </div>
-            `).join('');
+                `;
+            }).join('');
         };
 
         window.getResponsiveText = function(word, isPill) {
