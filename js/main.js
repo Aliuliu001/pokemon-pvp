@@ -167,6 +167,8 @@
                     globalTime: parseInt(document.getElementById('setting-global-time')?.value) || 180,
                     hp1: parseInt(document.getElementById('setting-hp-t1')?.value) || 7,
                     hp2: parseInt(document.getElementById('setting-hp-t2')?.value) || 7,
+                    cardsPerTurn: parseInt(document.getElementById('setting-cards-per-turn')?.value) || 3,
+                    maxBonusCards: parseInt(document.getElementById('setting-max-bonus')?.value) ?? 1,
                     specialCards: window.dynamicSpecialCards,
                     specialMode: window.isSpecialModeActive
                 };
@@ -282,8 +284,13 @@
                 
                 window.TEAM1_MAX_HP = parseInt(document.getElementById('setting-hp-t1')?.value) || 7;
                 window.TEAM2_MAX_HP = parseInt(document.getElementById('setting-hp-t2')?.value) || 7;
+                window.CARDS_PER_TURN = parseInt(document.getElementById('setting-cards-per-turn')?.value) || 3;
+                window.MAX_BONUS_CARDS = parseInt(document.getElementById('setting-max-bonus')?.value) ?? 1;
+
                 localStorage.setItem('pokemonClashHp1', window.TEAM1_MAX_HP);
                 localStorage.setItem('pokemonClashHp2', window.TEAM2_MAX_HP);
+                localStorage.setItem('pokemonClashCardsPerTurn', window.CARDS_PER_TURN);
+                localStorage.setItem('pokemonClashMaxBonus', window.MAX_BONUS_CARDS);
 
                 var bgImageUrl = document.getElementById('setting-bg-image')?.value.trim();
                 if (bgImageUrl) {
@@ -367,3 +374,38 @@
         window.setupGameEvents();
         window.initGame(); 
     
+            document.addEventListener('keydown', (e) => {
+                if (window.isGameOver || window.isProcessingModal) return;
+                
+                var keyMapCorrect = { '1':0, '2':1, '3':2, '4':3, '5':4, '6':5, '7':6 };
+                var keyMapIncorrect = { 'q':0, 'w':1, 'e':2, 'r':3, 't':4, 'y':5, 'u':6 };
+                var key = e.key.toLowerCase();
+                
+                var targetIdx = -1;
+                var isCorrect = true;
+                
+                if (keyMapCorrect[key] !== undefined) {
+                    targetIdx = keyMapCorrect[key];
+                    isCorrect = true;
+                } else if (keyMapIncorrect[key] !== undefined) {
+                    targetIdx = keyMapIncorrect[key];
+                    isCorrect = false;
+                }
+                
+                if (targetIdx !== -1 && targetIdx < window.currentHand.length) {
+                    var cards = document.querySelectorAll('#active-hand .card');
+                    if (cards && cards[targetIdx]) {
+                        var cardNode = cards[targetIdx];
+                        // Simulate click/right-click depending on isCorrect
+                        if (isCorrect) {
+                            if (!window.judgedCards.has(targetIdx) || window.judgedCards.get(targetIdx) === false) {
+                                cardNode.dispatchEvent(new MouseEvent('click', { bubbles: true }));
+                            }
+                        } else {
+                            if (window.judgedCards.get(targetIdx) !== false) {
+                                cardNode.dispatchEvent(new MouseEvent('contextmenu', { bubbles: true }));
+                            }
+                        }
+                    }
+                }
+            });

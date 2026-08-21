@@ -32,6 +32,9 @@
 
         window.MAX_ROWS = 100;       
         window.TEAM1_MAX_HP = 7;
+        window.CARDS_PER_TURN = parseInt(localStorage.getItem("pokemonClashCardsPerTurn")) || 3;
+        window.MAX_BONUS_CARDS = parseInt(localStorage.getItem("pokemonClashMaxBonus"));
+        if(isNaN(window.MAX_BONUS_CARDS)) window.MAX_BONUS_CARDS = 1;
         window.TEAM2_MAX_HP = 7;
         window.hasLoadedInjectedState = false;
 

@@ -1,4 +1,4 @@
-﻿        // Format Text
+        // Format Text
         window.getParsedCardText = function(text, val1, val2) {
             if (!text) return "";
             let res = text.replace(/{val}/g, val1);
@@ -43,6 +43,8 @@
                 window.GLOBAL_GAME_TIME = window.INJECTED_GAME_STATE.settings.globalTime;
                 window.TEAM1_MAX_HP = window.INJECTED_GAME_STATE.settings.hp1 || 7;
                 window.TEAM2_MAX_HP = window.INJECTED_GAME_STATE.settings.hp2 || 7;
+                window.CARDS_PER_TURN = window.INJECTED_GAME_STATE.settings.cardsPerTurn || 3;
+                window.MAX_BONUS_CARDS = window.INJECTED_GAME_STATE.settings.maxBonusCards ?? 1;
                 if (window.INJECTED_GAME_STATE.settings.specialCards) {
                     window.dynamicSpecialCards = window.INJECTED_GAME_STATE.settings.specialCards;
                 } else {
@@ -110,6 +112,8 @@
             if(document.getElementById('setting-hp-t2')) document.getElementById('setting-hp-t2').value = window.TEAM2_MAX_HP;
             if(document.getElementById('setting-bg-image')) document.getElementById('setting-bg-image').value = localStorage.getItem('pokemonClashBgImage') || '';
             if(document.getElementById('setting-bg-music')) document.getElementById('setting-bg-music').value = localStorage.getItem('pokemonClashBgmUrl') || '';
+            if(document.getElementById('setting-cards-per-turn')) document.getElementById('setting-cards-per-turn').value = window.CARDS_PER_TURN || 3;
+            if(document.getElementById('setting-max-bonus')) document.getElementById('setting-max-bonus').value = window.MAX_BONUS_CARDS || 1;
             
             window.renderGrid(parsedData);
             window.buildDeck();
