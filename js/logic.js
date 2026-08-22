@@ -210,7 +210,7 @@
                 window.globalDeck = [...baseData].sort(() => Math.random() - 0.5);
             }
 
-            if (window.isSpecialModeActive && window.globalDeck.length > 0) {
+            if (window.isSpecialModeActive && window.globalDeck.length > 0 && !window.SKILL_ON_MYSTIC_ONLY) {
                 var specialConfigs = [];
                 window.dynamicSpecialCards.forEach(c => {
                     for(var i=0; i<c.count; i++) specialConfigs.push(c);
@@ -305,9 +305,22 @@
                 
                 var card = window.globalDeck.pop();
                 if (card) {
-                    window.currentHand.push({ ...card, used: false, uniqueId: Math.random().toString(36).substr(2, 9) });
+                    if (window.isSpecialModeActive && window.SKILL_ON_MYSTIC_ONLY) {
+                        card.isSpecial = true;
+                        var pool = [];
+                        window.dynamicSpecialCards.forEach(c => {
+                            for(var i=0; i<c.count; i++) pool.push(c);
+                        });
+                        if (pool.length > 0) {
+                            card.specialConfig = pool[Math.floor(Math.random() * pool.length)];
+                        } else {
+                            card.isSpecial = false;
+                        }
+                    }
+                    var cardToPush = { ...card, used: false, uniqueId: Math.random().toString(36).substr(2, 9) };
+                    window.currentHand.push(cardToPush);
                     var newIdx = window.currentHand.length - 1;
-                    window.renderSingleCard(card, newIdx);
+                    window.renderSingleCard(cardToPush, newIdx);
                 }
                 window.updateBonusButton();
             });
@@ -321,7 +334,22 @@
             var btn = document.getElementById('bonus-card-btn');
             if (!btn) return;
             
+            var canShow = false;
             if (window.bonusDrawn < window.MAX_BONUS_CARDS && window.globalDeck.length > 0) {
+                if (window.isSpecialModeActive && window.SKILL_ON_MYSTIC_ONLY) {
+                    if (window.judgedCards.size === window.currentHand.length) {
+                        var allCorrect = true;
+                        for (var val of window.judgedCards.values()) {
+                            if (val === false) { allCorrect = false; break; }
+                        }
+                        if (allCorrect) canShow = true;
+                    }
+                } else {
+                    canShow = true;
+                }
+            }
+            
+            if (canShow) {
                 btn.classList.remove('hidden');
                 btn.classList.add('flex');
             } else {
@@ -402,6 +430,8 @@
                 
                 card.classList.add('animate-pulse');
                 setTimeout(() => card.classList.remove('animate-pulse'), 500);
+                
+                window.updateBonusButton();
                 
                 if (window.judgedCards.size === window.currentHand.length) {
                     if (window.stopTurnTimer) window.stopTurnTimer();

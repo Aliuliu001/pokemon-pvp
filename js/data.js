@@ -131,6 +131,7 @@ window.applyBackground = function() {
         window.tempoMultiplier = 1.0; 
         window.dynamicSpecialCards = [];
         window.currentActiveCardObj = null;
+        window.SKILL_ON_MYSTIC_ONLY = localStorage.getItem('pokemonClashSkillMysticOnly') === 'true';
         
         window.gameState = {
             bloodPact: { active: false, turnsLeft: 0, caster: null, justCasted: false },

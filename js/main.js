@@ -504,6 +504,8 @@
 
             attachBtn('btn-special-mode', 'click', () => { 
                 window.renderSpecialCardsModal(); 
+                var cb = document.getElementById('setting-skill-mystic-only');
+                if (cb) cb.checked = window.SKILL_ON_MYSTIC_ONLY;
                 var m = document.getElementById('special-cards-modal');
                 if(m) { m.classList.replace('hidden','flex'); }
             });
@@ -519,9 +521,12 @@
             
             attachBtn('btn-save-special', 'click', () => { 
                 window.isSpecialModeActive = true; 
+                var cb = document.getElementById('setting-skill-mystic-only');
+                if (cb) window.SKILL_ON_MYSTIC_ONLY = cb.checked;
                 
                 localStorage.setItem('pokemonClashSpecialCards', JSON.stringify(window.dynamicSpecialCards));
                 localStorage.setItem('pokemonClashSpecialMode', window.isSpecialModeActive);
+                localStorage.setItem('pokemonClashSkillMysticOnly', window.SKILL_ON_MYSTIC_ONLY);
                 
                 var m = document.getElementById('special-cards-modal');
                 if(m) { m.classList.replace('flex','hidden'); }
