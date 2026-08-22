@@ -259,6 +259,85 @@
                 setTimeout(() => { target.innerText = orig; target.classList.replace('bg-green-600', 'bg-blue-600'); }, 1500);
             });
 
+            attachBtn('btn-fetch-pokemon', 'click', async () => {
+                var input = document.getElementById('setting-custom-pokemon').value;
+                if (!input) return;
+                var ids = input.split(',').map(id => id.trim()).filter(id => id);
+                if (ids.length === 0) return;
+                
+                var statusEl = document.getElementById('fetch-pokemon-status');
+                statusEl.innerText = `Fetching ${ids.length} Pokémon...`;
+                statusEl.classList.remove('hidden');
+                statusEl.classList.replace('text-red-400', 'text-yellow-400');
+                statusEl.classList.replace('text-green-400', 'text-yellow-400');
+                
+                var newPokes = [];
+                for (var id of ids) {
+                    try {
+                        var res = await fetch(`https://pokeapi.co/api/v2/pokemon/${id.toLowerCase()}`);
+                        if (!res.ok) throw new Error();
+                        var data = await res.json();
+                        var type = data.types[0].type.name;
+                        var pokeName = data.name.toUpperCase();
+                        
+                        var typeMap = {
+                            'electric': { tone: 'yellow', rgb: '234, 179, 8', main: '#eab308', light: '#fef08a', dark: '#a16207', text: '#fde047' },
+                            'fire': { tone: 'red', rgb: '239, 68, 68', main: '#ef4444', light: '#fecaca', dark: '#b91c1c', text: '#fca5a5' },
+                            'water': { tone: 'blue', rgb: '56, 189, 248', main: '#38bdf8', light: '#bae6fd', dark: '#0369a1', text: '#7dd3fc' },
+                            'grass': { tone: 'green', rgb: '34, 197, 94', main: '#22c55e', light: '#bbf7d0', dark: '#15803d', text: '#86efac' },
+                            'psychic': { tone: 'purple', rgb: '168, 85, 247', main: '#a855f7', light: '#e9d5ff', dark: '#7e22ce', text: '#d8b4fe' },
+                            'dark': { tone: 'slate', rgb: '71, 85, 105', main: '#475569', light: '#cbd5e1', dark: '#1e293b', text: '#94a3b8' },
+                            'fairy': { tone: 'pink', rgb: '236, 72, 153', main: '#ec4899', light: '#fbcfe8', dark: '#be185d', text: '#f9a8d4' },
+                            'normal': { tone: 'orange', rgb: '249, 115, 22', main: '#f97316', light: '#fed7aa', dark: '#c2410c', text: '#fdba74' },
+                            'fighting': { tone: 'red', rgb: '220, 38, 38', main: '#dc2626', light: '#fecaca', dark: '#991b1b', text: '#f87171' },
+                            'dragon': { tone: 'indigo', rgb: '99, 102, 241', main: '#6366f1', light: '#c7d2fe', dark: '#4338ca', text: '#a5b4fc' },
+                            'ghost': { tone: 'purple', rgb: '147, 51, 234', main: '#9333ea', light: '#e9d5ff', dark: '#6b21a8', text: '#d8b4fe' },
+                            'rock': { tone: 'brown', rgb: '146, 64, 14', main: '#92400e', light: '#fcd34d', dark: '#451a03', text: '#fde68a' },
+                            'ground': { tone: 'orange', rgb: '217, 119, 6', main: '#d97706', light: '#fde68a', dark: '#78350f', text: '#fbbf24' },
+                            'ice': { tone: 'cyan', rgb: '6, 182, 212', main: '#06b6d4', light: '#cffafe', dark: '#0891b2', text: '#67e8f9' },
+                            'poison': { tone: 'purple', rgb: '147, 51, 234', main: '#9333ea', light: '#e9d5ff', dark: '#581c87', text: '#c084fc' },
+                            'flying': { tone: 'blue', rgb: '96, 165, 250', main: '#60a5fa', light: '#dbeafe', dark: '#1e3a8a', text: '#93c5fd' },
+                            'bug': { tone: 'green', rgb: '132, 204, 22', main: '#84cc16', light: '#d9f99d', dark: '#3f6212', text: '#bef264' },
+                            'steel': { tone: 'gray', rgb: '156, 163, 175', main: '#9ca3af', light: '#f3f4f6', dark: '#374151', text: '#d1d5db' }
+                        };
+                        
+                        var theme = typeMap[type] || typeMap['normal'];
+                        
+                        newPokes.push({
+                            id: data.id.toString(),
+                            name: pokeName,
+                            tone: theme.tone,
+                            pType: type,
+                            rgb: theme.rgb,
+                            main: theme.main,
+                            light: theme.light,
+                            dark: theme.dark,
+                            text: theme.text
+                        });
+                    } catch (e) {
+                        console.error("Failed to fetch", id);
+                    }
+                }
+                
+                if (newPokes.length > 0) {
+                    var existingCustom = [];
+                    try {
+                        var stored = localStorage.getItem('pokemonClashCustomTeams');
+                        if (stored) existingCustom = JSON.parse(stored);
+                    } catch(e){}
+                    
+                    var allCustom = existingCustom.concat(newPokes);
+                    localStorage.setItem('pokemonClashCustomTeams', JSON.stringify(allCustom));
+                    
+                    statusEl.innerText = `Successfully added ${newPokes.length} Pokémon! Refresh to see them.`;
+                    statusEl.classList.replace('text-yellow-400', 'text-green-400');
+                    setTimeout(() => { location.reload(); }, 2000);
+                } else {
+                    statusEl.innerText = "Failed to fetch. Check IDs/Names and internet.";
+                    statusEl.classList.replace('text-yellow-400', 'text-red-400');
+                }
+            });
+
             attachBtn('btn-fill-time', 'click', function(e) {
                 var time = document.getElementById('quick-time-input')?.value.trim();
                 if (!time) return alert("Nhập số giây!");

@@ -266,8 +266,11 @@
             
             var btn = document.createElement('button');
             btn.id = 'bonus-card-btn';
-            btn.className = 'hidden flex-col items-center justify-center bg-blue-500 hover:bg-blue-400 text-white font-bold p-2 md:p-4 rounded-xl shadow-lg border-2 border-white transition-all transform hover:scale-105 active:scale-95 h-full aspect-[2/5] md:aspect-[1/2]';
-            btn.innerHTML = `<span class="text-3xl md:text-5xl mb-2">🎁</span><span class="text-xs md:text-sm uppercase tracking-widest text-center">+1 BONUS</span>`;
+            btn.className = "galaxy-bg relative w-32 h-44 sm:w-40 sm:h-56 md:w-56 md:h-80 rounded-xl md:rounded-2xl flex flex-col items-center justify-center text-white shadow-[0_0_30px_rgba(139,92,246,0.6)] border-4 border-indigo-400/50 hover:scale-105 transition-transform shrink-0 cursor-pointer ml-2 md:ml-4 group";
+            btn.innerHTML = `
+                <span class="text-4xl sm:text-5xl md:text-7xl mb-2 drop-shadow-[0_0_15px_rgba(255,255,255,0.8)] group-hover:scale-110 transition-transform">🌌</span>
+                <span class="text-[10px] sm:text-xs md:text-sm font-black uppercase tracking-widest text-center text-indigo-200 z-10" style="text-shadow: 0 2px 4px rgba(0,0,0,0.8);">MYSTIC<br>BONUS</span>
+            `;
             
             btn.addEventListener('click', () => {
                 window.playSound('tick');

@@ -55,6 +55,14 @@ window.applyBackground = function() {
             { id: '282', name: 'GARDEVOIR', tone: 'pink', pType: 'psychic', rgb: '236, 72, 153', main: '#ec4899', light: '#fbcfe8', dark: '#be185d', text: '#f9a8d4' },
             { id: '697', name: 'TYRANTRUM', tone: 'brown', pType: 'rock', rgb: '146, 64, 14', main: '#92400e', light: '#fcd34d', dark: '#451a03', text: '#fde68a' }
         ];
+        
+        try {
+            var customTeams = localStorage.getItem('pokemonClashCustomTeams');
+            if (customTeams) {
+                var parsed = JSON.parse(customTeams);
+                if (Array.isArray(parsed)) window.POKEMON_TEAMS = window.POKEMON_TEAMS.concat(parsed);
+            }
+        } catch (e) { console.error(e); }
 
         window.TYPE_ICONS = {
             'electric': '⚡', 'fire': '🔥', 'psychic': '🔮', 'ice': '❄️',

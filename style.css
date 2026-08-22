@@ -107,6 +107,22 @@
         
         @keyframes breakShield { 0% { transform: scale(1); filter: brightness(1); opacity: 1; } 50% { transform: scale(1.5); filter: brightness(2) contrast(2); opacity: 0.8; } 100% { transform: scale(2); filter: brightness(3); opacity: 0; } }
         .shield-breaking { animation: breakShield 0.5s ease-out forwards; }
+        
+        .galaxy-bg {
+            background: linear-gradient(125deg, #0f172a, #1e1b4b, #312e81, #000000);
+            background-size: 400% 400%;
+            animation: galaxyFlow 12s ease infinite;
+            position: relative;
+            overflow: hidden;
+        }
+        @keyframes galaxyFlow { 0% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } 100% { background-position: 0% 50%; } }
+        .galaxy-bg::before {
+            content: ''; position: absolute; top: 0; left: 0; right: 0; bottom: 0;
+            background-image: radial-gradient(white 1px, transparent 1px), radial-gradient(white 1.5px, transparent 1.5px);
+            background-size: 40px 40px, 90px 90px; background-position: 0 0, 20px 20px;
+            opacity: 0.4; animation: starsMove 20s linear infinite;
+        }
+        @keyframes starsMove { from { background-position: 0 0, 20px 20px; } to { background-position: 0 -100px, 20px -50px; } }
 
         @keyframes avatarBounce { 0%, 100% { transform: translateY(0) scale(1); } 50% { transform: translateY(-15px) scale(1.1); } }
         .avatar-bounce { animation: avatarBounce 0.4s ease-in-out infinite; }

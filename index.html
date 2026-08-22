@@ -188,6 +188,14 @@
                     </div>
                 </div>
                 
+                <div class="mt-3 bg-slate-800/80 p-3 rounded-xl border border-slate-600">
+                    <label class="text-slate-200 text-xs md:text-sm font-semibold block mb-1">Add Custom Pokémons (Requires Internet):</label>
+                    <div class="flex gap-2">
+                        <input type="text" id="setting-custom-pokemon" class="flex-1 bg-slate-700 text-white text-sm p-2 rounded-lg outline-none border border-slate-500 placeholder-slate-400" placeholder="Enter Pokédex IDs (e.g. 150, 151, 200)">
+                        <button id="btn-fetch-pokemon" class="bg-indigo-600 hover:bg-indigo-500 text-white px-4 py-2 rounded-lg font-bold text-sm transition-colors border border-indigo-400 shadow-[0_0_10px_rgba(79,70,229,0.5)]">Fetch</button>
+                    </div>
+                    <p id="fetch-pokemon-status" class="text-xs text-yellow-400 mt-2 hidden"></p>
+                </div>
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-3 mt-3">
                     <div class="flex-1">
                         <label class="text-slate-300 text-xs md:text-sm font-semibold block mb-1">Background Image URL (Pinterest/Google):</label>
@@ -417,9 +425,9 @@
         </div>
     </div>
 
-    <script src="js/data.js?v=639229968141188102"></script>
+    <script src="js/data.js?v=639229984705350705"></script>
     <script src="js/ui.js?v=639229968141188102"></script>
-    <script src="js/logic.js?v=639229968141188102"></script>
-    <script src="js/main.js?v=639229968141188102"></script>
+    <script src="js/logic.js?v=639229984705350705"></script>
+    <script src="js/main.js?v=639229984705350705"></script>
 </body>
 </html>
