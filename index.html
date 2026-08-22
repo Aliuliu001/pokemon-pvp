@@ -235,12 +235,12 @@
                     </div>
                     
                     <div class="flex items-center bg-slate-700 rounded-lg overflow-hidden border border-amber-500 shadow-inner">
-                        <select id="quick-time-type" class="bg-slate-800 text-amber-400 px-1 py-1.5 outline-none text-xs sm:text-sm font-bold border-r border-slate-500 cursor-pointer">
-                            <option value="4">Front</option>
-                            <option value="5">Back</option>
+                        <input type="number" id="quick-time-input" placeholder="Secs" class="bg-transparent text-amber-400 px-2 py-1.5 w-16 sm:w-20 outline-none text-xs sm:text-sm font-bold text-center border-r border-slate-500" min="1" step="1" value="10">
+                        <select id="btn-fill-time-select" class="bg-amber-600 hover:bg-amber-500 text-white px-2 sm:px-3 py-1.5 text-xs sm:text-sm font-bold transition-colors cursor-pointer outline-none appearance-none text-center">
+                            <option value="" disabled selected>⏱️ Fill Time ▾</option>
+                            <option value="4" class="bg-slate-800 text-left">Fill Front</option>
+                            <option value="5" class="bg-slate-800 text-left">Fill Back</option>
                         </select>
-                        <input type="number" id="quick-time-input" placeholder="Secs" class="bg-transparent text-amber-400 px-2 py-1.5 w-14 sm:w-16 outline-none text-xs sm:text-sm font-bold text-center" min="1" step="1" value="10">
-                        <button id="btn-fill-time" class="bg-amber-600 hover:bg-amber-500 text-white px-2 sm:px-3 py-1.5 text-xs sm:text-sm font-bold transition-colors border-l border-amber-500 whitespace-nowrap">⏱️ Fill Time</button>
                     </div>
                     
                     <div class="flex items-center bg-slate-700 rounded-lg overflow-hidden border border-red-500 shadow-inner">

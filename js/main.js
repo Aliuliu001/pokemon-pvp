@@ -412,10 +412,14 @@
                 }
             });
 
-            attachBtn('btn-fill-time', 'click', function(e) {
+            attachBtn('btn-fill-time-select', 'change', function(e) {
+                var col = e.currentTarget.value;
+                if (!col) return;
                 var time = document.getElementById('quick-time-input')?.value;
-                var col = document.getElementById('quick-time-type')?.value || "4";
-                if (!time) return alert("Nhập số giây!");
+                if (!time) {
+                    e.currentTarget.value = "";
+                    return alert("Nhập số giây!");
+                }
                 for (var i = 0; i < window.MAX_ROWS; i++) {
                     var rowHasData = Array.from({length:4}).some((_,c) => document.querySelector(`input[data-row="${i}"][data-col="${c}"]`)?.value.trim());
                     if (rowHasData) {
@@ -424,10 +428,14 @@
                     }
                 }
                 var target = e.currentTarget;
-                var orig = target.innerText; 
-                target.innerText = 'Done ✓'; 
+                var orig = target.options[0].innerText;
+                target.options[0].innerText = 'Done ✓';
                 target.classList.replace('bg-amber-600', 'bg-green-600');
-                setTimeout(() => { target.innerText = orig; target.classList.replace('bg-green-600', 'bg-amber-600'); }, 1500);
+                target.value = "";
+                setTimeout(() => {
+                    target.options[0].innerText = orig;
+                    target.classList.replace('bg-green-600', 'bg-amber-600');
+                }, 1000);
             });
 
             attachBtn('btn-save-settings', 'click', () => {
