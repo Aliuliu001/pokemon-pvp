@@ -132,6 +132,8 @@ window.applyBackground = function() {
         window.dynamicSpecialCards = [];
         window.currentActiveCardObj = null;
         window.SKILL_ON_MYSTIC_ONLY = localStorage.getItem('pokemonClashSkillMysticOnly') === 'true';
+        window.MAX_SKILLS_PER_TURN = parseInt(localStorage.getItem('pokemonClashMaxSkillsPerTurn'));
+        if (isNaN(window.MAX_SKILLS_PER_TURN)) window.MAX_SKILLS_PER_TURN = 2;
         
         window.gameState = {
             bloodPact: { active: false, turnsLeft: 0, caster: null, justCasted: false },

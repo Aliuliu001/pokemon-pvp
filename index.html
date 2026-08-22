@@ -305,18 +305,25 @@
                 <h2 class="text-2xl md:text-3xl font-black text-transparent bg-clip-text bg-gradient-to-r from-yellow-300 to-yellow-500 tarot-font tracking-wider drop-shadow-md">BATTLE CARDS MANAGER</h2>
                 <p class="text-slate-300 text-sm md:text-base mt-2">Quản lý và điều chỉnh thông số cho các lá bài kỹ năng đặc biệt trong trận đấu.</p>
                 
-                <label class="inline-flex items-center space-x-2 text-white font-bold text-xs md:text-sm bg-slate-700/50 p-2 rounded-lg mt-3 border border-slate-600 cursor-pointer hover:bg-slate-700 transition-colors">
-                    <input type="checkbox" id="setting-skill-mystic-only" class="w-4 h-4 text-amber-500 rounded focus:ring-amber-500 cursor-pointer">
-                    <span>Chế độ Khó: Thẻ Skill ẩn giấu bên trong Mystic Bonus (Mở khóa khi trả lời đúng 100%)</span>
-                </label>
+                <div class="flex flex-col md:flex-row items-center justify-center gap-4 mt-4">
+                    <label class="flex items-center space-x-2 text-white font-bold text-xs md:text-sm bg-slate-700/50 p-2 rounded-lg border border-slate-600 cursor-pointer hover:bg-slate-700 transition-colors">
+                        <input type="checkbox" id="setting-skill-mystic-only" class="w-4 h-4 text-amber-500 rounded focus:ring-amber-500 cursor-pointer">
+                        <span>Chế độ Khó: Skill chỉ ẩn giấu bên trong Mystic Bonus</span>
+                    </label>
+
+                    <div class="flex items-center space-x-2 bg-slate-700/50 p-2 rounded-lg border border-slate-600">
+                        <span class="text-white font-bold text-xs md:text-sm">Số lượng Card Skill tối đa mỗi lượt:</span>
+                        <input type="number" id="setting-max-skills-per-turn" class="w-16 bg-slate-800 text-yellow-400 font-bold px-2 py-1 rounded border border-slate-500 text-center outline-none focus:border-yellow-400" value="2" min="1" max="10">
+                    </div>
+                </div>
             </div>
             
             <div class="flex items-center gap-2 mb-2 bg-slate-900 p-2 rounded-lg border border-slate-600 shrink-0 flex-wrap justify-center md:justify-start">
                 <span class="text-yellow-400 font-bold text-xs uppercase">Điền nhanh:</span>
-                <input type="number" id="bulk-val-input" class="w-12 md:w-16 bg-slate-700 text-white px-1 py-1 rounded text-xs text-center border border-slate-500" placeholder="Val">
-                <button onclick="window.bulkSetVal()" class="bg-blue-600 hover:bg-blue-500 text-white px-2 py-1 rounded text-xs font-bold">Set VAL</button>
-                <input type="number" id="bulk-qty-input" class="w-12 md:w-16 bg-slate-700 text-white px-1 py-1 rounded text-xs text-center border border-slate-500 ml-2" placeholder="Qty">
-                <button onclick="window.bulkSetQty()" class="bg-green-600 hover:bg-green-500 text-white px-2 py-1 rounded text-xs font-bold">Set QTY</button>
+                <input type="number" id="bulk-val-input" class="w-12 md:w-16 bg-slate-700 text-white px-1 py-1 rounded text-xs text-center border border-slate-500" title="Sức mạnh (VD: Trừ 2 máu)" placeholder="Val">
+                <button onclick="window.bulkSetVal()" class="bg-blue-600 hover:bg-blue-500 text-white px-2 py-1 rounded text-xs font-bold" title="Set Sức mạnh">Set S.Mạnh</button>
+                <input type="number" id="bulk-qty-input" class="w-12 md:w-16 bg-slate-700 text-white px-1 py-1 rounded text-xs text-center border border-slate-500 ml-2" title="Số lượng thẻ trong bộ bài" placeholder="Qty">
+                <button onclick="window.bulkSetQty()" class="bg-green-600 hover:bg-green-500 text-white px-2 py-1 rounded text-xs font-bold" title="Set Số lượng">Set S.Lượng</button>
                 <button onclick="window.bulkClearQty()" class="bg-red-600 hover:bg-red-500 text-white px-2 py-1 rounded text-xs font-bold md:ml-auto">Clear QTY</button>
             </div>
 
@@ -324,16 +331,16 @@
                 <table class="w-full min-w-[750px] text-left text-sm text-slate-300 border-collapse">
                     <thead class="sticky top-0 bg-slate-700 text-[11px] uppercase shadow-md z-10 text-center text-yellow-400">
                         <tr>
-                            <th class="px-1 py-3 border-b border-r border-slate-600 w-[5%]">⇅</th>
+                            <th class="px-1 py-3 border-b border-r border-slate-600 w-[5%]">#</th>
                             <th class="px-2 py-3 border-b border-r border-slate-600 w-[20%]">Kỹ Năng</th>
                             <th class="px-2 py-3 border-b border-r border-slate-600 w-[20%]">Hiệu Ứng</th>
                             <th class="px-2 py-3 border-b border-r border-slate-600 w-[25%]">Ghi Chú & HDSD</th>
-                            <th class="px-2 py-3 border-b border-r border-slate-600 w-[15%] bg-slate-800/50">Chỉ Số (VAL)</th>
-                            <th class="px-2 py-3 border-b border-slate-600 w-[15%] bg-slate-800/50">SL (QTY)</th>
+                            <th class="px-2 py-3 border-b border-r border-slate-600 w-[15%] bg-slate-800/50" title="Sức mạnh của hiệu ứng (VD: Trừ 2 máu thì nhập 2)">Sức mạnh (Val)</th>
+                            <th class="px-2 py-3 border-b border-slate-600 w-[15%] bg-slate-800/50" title="Số lượng thẻ này trong bộ bài">Số lượng (Qty)</th>
                         </tr>
                     </thead>
-                    <tbody id="special-cards-tbody">
-                        <!-- Rendered via JS -->
+                    <tbody id="special-cards-tbody" class="divide-y divide-slate-700">
+                        <!-- Render from JS -->
                     </tbody>
                 </table>
             </div>

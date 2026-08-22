@@ -506,6 +506,8 @@
                 window.renderSpecialCardsModal(); 
                 var cb = document.getElementById('setting-skill-mystic-only');
                 if (cb) cb.checked = window.SKILL_ON_MYSTIC_ONLY;
+                var maxSk = document.getElementById('setting-max-skills-per-turn');
+                if (maxSk) maxSk.value = window.MAX_SKILLS_PER_TURN;
                 var m = document.getElementById('special-cards-modal');
                 if(m) { m.classList.replace('hidden','flex'); }
             });
@@ -523,10 +525,13 @@
                 window.isSpecialModeActive = true; 
                 var cb = document.getElementById('setting-skill-mystic-only');
                 if (cb) window.SKILL_ON_MYSTIC_ONLY = cb.checked;
+                var maxSk = document.getElementById('setting-max-skills-per-turn');
+                if (maxSk) window.MAX_SKILLS_PER_TURN = parseInt(maxSk.value) || 2;
                 
                 localStorage.setItem('pokemonClashSpecialCards', JSON.stringify(window.dynamicSpecialCards));
                 localStorage.setItem('pokemonClashSpecialMode', window.isSpecialModeActive);
                 localStorage.setItem('pokemonClashSkillMysticOnly', window.SKILL_ON_MYSTIC_ONLY);
+                localStorage.setItem('pokemonClashMaxSkillsPerTurn', window.MAX_SKILLS_PER_TURN);
                 
                 var m = document.getElementById('special-cards-modal');
                 if(m) { m.classList.replace('flex','hidden'); }

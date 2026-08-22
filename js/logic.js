@@ -216,7 +216,7 @@
                     for(var i=0; i<c.count; i++) specialConfigs.push(c);
                 });
                 specialConfigs.sort(() => Math.random() - 0.5);
-                specialConfigs = specialConfigs.slice(0, 2);
+                specialConfigs = specialConfigs.slice(0, window.MAX_SKILLS_PER_TURN || 2);
                 
                 for (var i = 0; i < specialConfigs.length; i++) {
                     if (i < window.globalDeck.length) {
