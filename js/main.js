@@ -225,7 +225,7 @@
                     frontMode: document.getElementById('setting-front-mode')?.value || 'both',
                     backMode: document.getElementById('setting-back-mode')?.value || 'full',
                     timerEnabled: document.getElementById('setting-timer-enabled')?.value === 'on',
-                    globalTime: parseInt(document.getElementById('setting-global-time')?.value) || 180,
+                    globalTime: (parseInt(document.getElementById('setting-global-time')?.value) || 15) * 60,
                     readTime: parseInt(document.getElementById('setting-read-time')?.value) || 0,
                     hp1: parseInt(document.getElementById('setting-hp-t1')?.value) || 7,
                     hp2: parseInt(document.getElementById('setting-hp-t2')?.value) || 7,
@@ -448,7 +448,7 @@
                 window.DISPLAY_MODE.back = document.getElementById('setting-back-mode')?.value || 'full';
                 localStorage.setItem('pokemonClashDisplayMode', JSON.stringify(window.DISPLAY_MODE));
                 var gt = parseInt(document.getElementById('setting-global-time')?.value);
-                if (gt && gt > 0) { window.GLOBAL_GAME_TIME = gt; localStorage.setItem('pokemonClashGlobalTime', window.GLOBAL_GAME_TIME); }
+                if (gt && gt > 0) { window.GLOBAL_GAME_TIME = gt * 60; localStorage.setItem('pokemonClashGlobalTime', window.GLOBAL_GAME_TIME); }
                 var rt = parseInt(document.getElementById('setting-read-time')?.value) || 0;
                 window.READ_TIME = rt;
                 localStorage.setItem('pokemonClashReadTime', window.READ_TIME);

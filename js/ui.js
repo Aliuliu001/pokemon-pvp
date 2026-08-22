@@ -133,7 +133,7 @@
             if(document.getElementById('setting-front-mode')) document.getElementById('setting-front-mode').value = window.DISPLAY_MODE.front;
             if(document.getElementById('setting-back-mode')) document.getElementById('setting-back-mode').value = window.DISPLAY_MODE.back;
             if(document.getElementById('setting-timer-enabled')) document.getElementById('setting-timer-enabled').value = window.GLOBAL_TIMER_ENABLED ? 'on' : 'off';
-            if(document.getElementById('setting-global-time')) document.getElementById('setting-global-time').value = window.GLOBAL_GAME_TIME;
+            if(document.getElementById('setting-global-time')) document.getElementById('setting-global-time').value = Math.floor(window.GLOBAL_GAME_TIME / 60);
             if(document.getElementById('setting-read-time')) document.getElementById('setting-read-time').value = window.READ_TIME;
             if(document.getElementById('setting-hp-t1')) document.getElementById('setting-hp-t1').value = window.TEAM1_MAX_HP;
             if(document.getElementById('setting-hp-t2')) document.getElementById('setting-hp-t2').value = window.TEAM2_MAX_HP;
@@ -371,42 +371,68 @@
             }
         };
         
-        window.startTimer = function() { if(window.isGameStarted) return; window.isGameStarted = true; window.stopReadTimer(); document.getElementById('global-status').classList.add('hidden'); document.getElementById('game-timer-container').classList.remove('hidden'); window.currentGameTime = window.GLOBAL_GAME_TIME; window.updateTimerUI(); clearInterval(window.gameTimerInterval); window.gameTimerInterval = setInterval(() => { window.currentGameTime--; window.updateTimerUI(); if(window.currentGameTime <= 0) window.triggerWin(true); }, 1000); };
+        window.startTotalTimer = function() {
+            if(window.isGameStarted) return; 
+            window.isGameStarted = true; 
+            document.getElementById('global-status').classList.add('hidden'); 
+            
+            if (window.GLOBAL_TIMER_ENABLED) {
+                document.getElementById('game-timer-container').classList.remove('hidden'); 
+                window.currentGameTime = window.GLOBAL_GAME_TIME; 
+                window.updateTimerUI(); 
+                clearInterval(window.gameTimerInterval); 
+                window.gameTimerInterval = setInterval(() => { 
+                    window.currentGameTime--; 
+                    window.updateTimerUI(); 
+                    if(window.currentGameTime <= 0) {
+                        clearInterval(window.gameTimerInterval);
+                        window.triggerWin(true); 
+                    }
+                }, 1000); 
+            }
+        };
+
+        window.startTimer = window.startTotalTimer;
         window.stopGameGlobalTimer = function() { clearInterval(window.gameTimerInterval); window.isGameStarted = false; };
         
-        window.readTimerInterval = null;
-        window.startReadTimer = function() {
-            window.stopReadTimer();
+        window.turnTimerInterval = null;
+        window.startTurnTimer = function() {
+            window.stopTurnTimer();
             if (!window.READ_TIME || window.READ_TIME <= 0) return;
             var display = document.getElementById('read-timer-display');
             if(!display) return;
             display.classList.remove('hidden');
             var timeLeft = window.READ_TIME;
-            display.innerText = 'TIME TO READ: ' + timeLeft + 's';
-            window.readTimerInterval = setInterval(() => {
+            display.innerText = 'TIME LEFT: ' + timeLeft + 's';
+            display.style.color = '#facc15';
+            window.turnTimerInterval = setInterval(() => {
                 timeLeft--;
-                display.innerText = 'TIME TO READ: ' + timeLeft + 's';
+                display.innerText = 'TIME LEFT: ' + timeLeft + 's';
+                if (timeLeft <= 5) display.style.color = '#ef4444';
                 if (timeLeft <= 0) {
-                    window.stopReadTimer();
+                    window.stopTurnTimer();
                     window.playSound('boom');
                     window.triggerMegaExplosion(window.currentTurn);
                     window.applyHPChange(window.currentTurn, -1, true, false);
                     var statusElNode = document.getElementById('global-status');
                     if(statusElNode) {
-                        statusElNode.innerHTML = `<span class="bg-red-600/90 px-8 py-4 rounded-3xl border-4 border-red-300 text-white drop-shadow-[0_0_20px_rgba(220,38,38,1)]">HẾT GIỜ ĐỌC! BÙM!</span>`;
+                        statusElNode.innerHTML = `<span class="bg-red-600/90 px-8 py-4 rounded-3xl border-4 border-red-300 text-white drop-shadow-[0_0_20px_rgba(220,38,38,1)]">HẾT GIỜ! BÙM!</span>`;
                         statusElNode.classList.remove('hidden');
                         setTimeout(() => statusElNode.classList.add('hidden'), 2500);
                     }
-                    setTimeout(() => { if (!window.isGameOver) window.switchTurn(); }, 3000);
+                    setTimeout(() => { if (!window.isGameOver) { if(window.processNextTurn) window.processNextTurn(); } }, 3000);
                 }
             }, 1000);
         };
         
-        window.stopReadTimer = function() {
-            clearInterval(window.readTimerInterval);
+        window.stopTurnTimer = function() {
+            clearInterval(window.turnTimerInterval);
             var display = document.getElementById('read-timer-display');
             if(display) display.classList.add('hidden');
         };
+        
+        window.startReadTimer = window.startTurnTimer;
+        window.stopReadTimer = window.stopTurnTimer;
 
         window.updateSpecialModeUI = function() {
             var ind = document.getElementById('special-mode-indicator');

@@ -401,6 +401,7 @@
                 setTimeout(() => card.classList.remove('animate-pulse'), 500);
                 
                 if (window.judgedCards.size === window.currentHand.length) {
+                    if (window.stopTurnTimer) window.stopTurnTimer();
                     var allWrong = true;
                     for (var val of window.judgedCards.values()) {
                         if (val === true) { allWrong = false; break; }
@@ -418,7 +419,7 @@
                         }
                         
                         setTimeout(() => {
-                            if (!window.isGameOver) window.switchTurn();
+                            if (!window.isGameOver) { if(window.processNextTurn) window.processNextTurn(); }
                         }, 3000);
                     } else {
                         window.playSound('defuse'); 
@@ -1302,17 +1303,17 @@
                             if(mSpec.id === 'MIMIC') mSpec = window.SPECIAL_CARDS_CONFIG.find(c => c.id === 'MEDIKIT');
                             
                             // Execute directly
-                            window.executeSpecialSkill(mCaster, mTarget, mSpec, processNextTurn);
+                            window.executeSpecialSkill(mCaster, mTarget, mSpec, window.processNextTurn);
                         }, 2000);
                     } else {
-                        window.executeSpecialSkill(mCaster, mTarget, mSpec, processNextTurn);
+                        window.executeSpecialSkill(mCaster, mTarget, mSpec, window.processNextTurn);
                     }
                 } else {
-                    processNextTurn();
+                    window.processNextTurn();
                 }
             };
 
-            var processNextTurn = function() {
+            window.processNextTurn = function() {
                 if (window.teams.team1.hp <= 0 || window.teams.team2.hp <= 0) { 
                     window.isProcessingModal = false;
                     window.triggerWin(); 
@@ -1360,10 +1361,10 @@
 
                 window.currentTurn = nextTurn;
 
-                checkStatusLoop();
+                window.checkStatusLoop();
             }
 
-            function checkStatusLoop() {
+            window.checkStatusLoop = function() {
                 var team = window.teams[window.currentTurn];
                 
                 if (team.isFrozen) {
@@ -1376,7 +1377,7 @@
                     }
                     window.playSound('defuse');
                     window.currentTurn = window.currentTurn === 'team1' ? 'team2' : 'team1';
-                    setTimeout(checkStatusLoop, 2000);
+                    setTimeout(window.checkStatusLoop, 2000);
                     return;
                 }
 
@@ -1391,7 +1392,7 @@
                     }
                     window.playSound('defuse');
                     window.currentTurn = window.currentTurn === 'team1' ? 'team2' : 'team1';
-                    setTimeout(checkStatusLoop, 2000);
+                    setTimeout(window.checkStatusLoop, 2000);
                     return;
                 }
 
