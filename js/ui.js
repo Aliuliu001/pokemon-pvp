@@ -13,6 +13,7 @@
             var fWord = window.escapeHTML(rowData.fWord);
             var bImgId = window.escapeHTML(rowData.bImgId);
             var bText = window.escapeHTML(rowData.bText);
+            var fTime = window.escapeHTML(rowData.fTime || '');
             var bTime = window.escapeHTML(rowData.bTime);
 
             var getImgTag = (id) => {
@@ -38,7 +39,8 @@
                     <input type="text" data-row="${i}" data-col="2" class="w-full h-full bg-transparent pl-8 pr-1 py-2 outline-none focus:bg-slate-700 text-green-300 text-center font-bold" value="${bImgId}">
                 </td>
                 <td class="border-r border-slate-600 p-0 bg-slate-900/50"><input type="text" data-row="${i}" data-col="3" class="w-full h-full bg-transparent px-2 py-2 outline-none focus:bg-slate-700 text-green-300 font-bold" value="${bText}"></td>
-                <td class="p-0 bg-slate-900/50"><input type="text" data-row="${i}" data-col="4" class="w-full h-full bg-transparent px-1 py-2 outline-none focus:bg-slate-700 text-red-400 text-center font-bold" value="${bTime}"></td>
+                <td class="border-r border-slate-600 p-0 bg-slate-900/50"><input type="text" data-row="${i}" data-col="4" class="w-full h-full bg-transparent px-1 py-2 outline-none focus:bg-slate-700 text-orange-400 text-center font-bold" value="${fTime}"></td>
+                <td class="p-0 bg-slate-900/50"><input type="text" data-row="${i}" data-col="5" class="w-full h-full bg-transparent px-1 py-2 outline-none focus:bg-slate-700 text-red-400 text-center font-bold" value="${bTime}"></td>
             `;
             gridBody.appendChild(tr);
         };
@@ -134,7 +136,6 @@
             if(document.getElementById('setting-back-mode')) document.getElementById('setting-back-mode').value = window.DISPLAY_MODE.back;
             if(document.getElementById('setting-timer-enabled')) document.getElementById('setting-timer-enabled').value = window.GLOBAL_TIMER_ENABLED ? 'on' : 'off';
             if(document.getElementById('setting-global-time')) document.getElementById('setting-global-time').value = Math.floor(window.GLOBAL_GAME_TIME / 60);
-            if(document.getElementById('setting-read-time')) document.getElementById('setting-read-time').value = window.READ_TIME;
             if(document.getElementById('setting-hp-t1')) document.getElementById('setting-hp-t1').value = window.TEAM1_MAX_HP;
             if(document.getElementById('setting-hp-t2')) document.getElementById('setting-hp-t2').value = window.TEAM2_MAX_HP;
             if(document.getElementById('setting-bg-image')) document.getElementById('setting-bg-image').value = localStorage.getItem('pokemonClashBgImage') || '';
@@ -398,17 +399,43 @@
         window.turnTimerInterval = null;
         window.startTurnTimer = function() {
             window.stopTurnTimer();
-            if (!window.READ_TIME || window.READ_TIME <= 0) return;
-            var display = document.getElementById('read-timer-display');
-            if(!display) return;
-            display.classList.remove('hidden');
-            var timeLeft = window.READ_TIME;
-            display.innerText = 'TIME LEFT: ' + timeLeft + 's';
-            display.style.color = '#facc15';
+            if (!window.currentHand || window.currentHand.length === 0) return;
+            
+            var totalSecs = 0;
+            window.currentHand.forEach(c => {
+                var s = parseInt(c.fTime);
+                if (!isNaN(s) && s > 0) totalSecs += s;
+            });
+            
+            if (totalSecs <= 0) return;
+
+            var container = document.getElementById('read-timer-container');
+            var bar = document.getElementById('read-timer-bar');
+            var text = document.getElementById('read-timer-text');
+            if(!container || !bar || !text) return;
+            
+            container.classList.remove('hidden');
+            bar.style.width = '100%';
+            bar.className = 'absolute left-0 top-0 h-full w-full transition-all duration-1000 ease-linear bg-gradient-to-r from-green-400 to-emerald-500';
+            
+            var timeLeft = totalSecs;
+            text.innerText = 'FRONT TIME: ' + timeLeft + 's';
+            
             window.turnTimerInterval = setInterval(() => {
                 timeLeft--;
-                display.innerText = 'TIME LEFT: ' + timeLeft + 's';
-                if (timeLeft <= 5) display.style.color = '#ef4444';
+                text.innerText = 'FRONT TIME: ' + timeLeft + 's';
+                
+                var pct = Math.max(0, (timeLeft / totalSecs) * 100);
+                bar.style.width = pct + '%';
+                
+                if (pct <= 25) {
+                    bar.classList.remove('from-green-400', 'to-emerald-500', 'from-yellow-400', 'to-amber-500');
+                    bar.classList.add('from-red-500', 'to-rose-600');
+                } else if (pct <= 50) {
+                    bar.classList.remove('from-green-400', 'to-emerald-500');
+                    bar.classList.add('from-yellow-400', 'to-amber-500');
+                }
+
                 if (timeLeft <= 0) {
                     window.stopTurnTimer();
                     window.playSound('boom');
@@ -427,8 +454,8 @@
         
         window.stopTurnTimer = function() {
             clearInterval(window.turnTimerInterval);
-            var display = document.getElementById('read-timer-display');
-            if(display) display.classList.add('hidden');
+            var container = document.getElementById('read-timer-container');
+            if(container) container.classList.add('hidden');
         };
         
         window.startReadTimer = window.startTurnTimer;

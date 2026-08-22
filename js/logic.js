@@ -172,6 +172,7 @@
                 var node2 = document.querySelector(`input[data-row="${i}"][data-col="2"]`);
                 var node3 = document.querySelector(`input[data-row="${i}"][data-col="3"]`);
                 var node4 = document.querySelector(`input[data-row="${i}"][data-col="4"]`);
+                var node5 = document.querySelector(`input[data-row="${i}"][data-col="5"]`);
 
                 if (!node0) break;
 
@@ -179,16 +180,17 @@
                 var fWord = node1 ? node1.value.trim() : '';
                 var bImgId = node2 ? node2.value.trim() : '';
                 var bText = node3 ? node3.value.trim() : '';
-                var bTime = node4 ? node4.value.trim() : '';
+                var fTime = node4 ? node4.value.trim() : '';
+                var bTime = node5 ? node5.value.trim() : '';
 
                 if (fId || fWord) {
-                    fronts.push({ fId, fWord });
+                    fronts.push({ fId, fWord, fTime });
                     backs.push({ bImgId, bText, bTime });
                 }
             }
 
             if (fronts.length === 0) {
-                fronts = window.DEFAULT_JSON_DATA.map(item => ({ fId: item.fId, fWord: item.fWord }));
+                fronts = window.DEFAULT_JSON_DATA.map(item => ({ fId: item.fId, fWord: item.fWord, fTime: item.fTime || '' }));
                 backs = window.DEFAULT_JSON_DATA.map(item => ({ bImgId: item.bImgId, bText: item.bText, bTime: item.bTime }));
             }
 
@@ -198,6 +200,7 @@
                 type: 'normal',
                 fId: front.fId,
                 fWord: front.fWord,
+                fTime: front.fTime,
                 bImgId: backs[index].bImgId,
                 bText: backs[index].bText,
                 bTime: backs[index].bTime

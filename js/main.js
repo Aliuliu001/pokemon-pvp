@@ -87,7 +87,7 @@
                                 window.MAX_ROWS++;
                             }
                             
-                            if (trgCol < 5) {
+                            if (trgCol < 6) {
                                 var input = document.querySelector(`input[data-row="${trgRow}"][data-col="${trgCol}"]`);
                                 if (input) {
                                     input.value = colStr.trim();
@@ -218,7 +218,8 @@
                         fWord: document.querySelector(`input[data-row="${i}"][data-col="1"]`)?.value.trim() || '',
                         bImgId: document.querySelector(`input[data-row="${i}"][data-col="2"]`)?.value.trim() || '',
                         bText: document.querySelector(`input[data-row="${i}"][data-col="3"]`)?.value.trim() || '',
-                        bTime: document.querySelector(`input[data-row="${i}"][data-col="4"]`)?.value.trim() || ''
+                        fTime: document.querySelector(`input[data-row="${i}"][data-col="4"]`)?.value.trim() || '',
+                        bTime: document.querySelector(`input[data-row="${i}"][data-col="5"]`)?.value.trim() || ''
                     });
                 }
                 var exportSettings = {
@@ -412,12 +413,13 @@
             });
 
             attachBtn('btn-fill-time', 'click', function(e) {
-                var time = document.getElementById('quick-time-input')?.value.trim();
+                var time = document.getElementById('quick-time-input')?.value;
+                var col = document.getElementById('quick-time-type')?.value || "4";
                 if (!time) return alert("Nhập số giây!");
                 for (var i = 0; i < window.MAX_ROWS; i++) {
                     var rowHasData = Array.from({length:4}).some((_,c) => document.querySelector(`input[data-row="${i}"][data-col="${c}"]`)?.value.trim());
                     if (rowHasData) {
-                        var input = document.querySelector(`input[data-row="${i}"][data-col="4"]`);
+                        var input = document.querySelector(`input[data-row="${i}"][data-col="${col}"]`);
                         if(input) input.value = time;
                     }
                 }
@@ -437,21 +439,20 @@
                     var fWord = document.querySelector(`input[data-row="${i}"][data-col="1"]`)?.value.trim() || '';
                     var bImgId = document.querySelector(`input[data-row="${i}"][data-col="2"]`)?.value.trim() || '';
                     var bText = document.querySelector(`input[data-row="${i}"][data-col="3"]`)?.value.trim() || '';
-                    var bTime = document.querySelector(`input[data-row="${i}"][data-col="4"]`)?.value.trim() || '';
+                    var fTime = document.querySelector(`input[data-row="${i}"][data-col="4"]`)?.value.trim() || '';
+                    var bTime = document.querySelector(`input[data-row="${i}"][data-col="5"]`)?.value.trim() || '';
 
                     if (fId || fWord || bImgId || bText) {
-                        newData.push({ fId, fWord, bImgId, bText, bTime });
+                        newData.push({ fId, fWord, bImgId, bText, fTime, bTime });
                     }
                 }
                 localStorage.setItem('pokemonClashDataJSON', JSON.stringify(newData));
                 window.DISPLAY_MODE.front = document.getElementById('setting-front-mode')?.value || 'both';
                 window.DISPLAY_MODE.back = document.getElementById('setting-back-mode')?.value || 'full';
                 localStorage.setItem('pokemonClashDisplayMode', JSON.stringify(window.DISPLAY_MODE));
-                var gt = parseInt(document.getElementById('setting-global-time')?.value);
-                if (gt && gt > 0) { window.GLOBAL_GAME_TIME = gt * 60; localStorage.setItem('pokemonClashGlobalTime', window.GLOBAL_GAME_TIME); }
-                var rt = parseInt(document.getElementById('setting-read-time')?.value) || 0;
-                window.READ_TIME = rt;
-                localStorage.setItem('pokemonClashReadTime', window.READ_TIME);
+                var gt = parseInt(document.getElementById('setting-global-time')?.value) || 15;
+                window.GLOBAL_GAME_TIME = gt * 60;
+                localStorage.setItem('pokemonClashGlobalTime', window.GLOBAL_GAME_TIME);
                 window.GLOBAL_TIMER_ENABLED = document.getElementById('setting-timer-enabled')?.value === 'on';
                 localStorage.setItem('pokemonClashTimerEnabled', window.GLOBAL_TIMER_ENABLED);
                 
