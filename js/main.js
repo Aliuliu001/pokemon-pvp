@@ -109,11 +109,27 @@
             }
 
             
+            var clearImgBtn = document.getElementById('btn-clear-images');
+            if (clearImgBtn) {
+                clearImgBtn.addEventListener('click', function(e) {
+                    if (confirm("Are you sure you want to delete all uploaded images?")) {
+                        window.imagesPool = {};
+                        localStorage.removeItem('pokemonClashImagePool');
+                        var target = e.currentTarget;
+                        var orig = target.innerText;
+                        target.innerText = "Cleared!";
+                        window.buildDeck();
+                        setTimeout(() => target.innerText = orig, 1500);
+                    }
+                });
+            }
+
             var uploadBtn = document.getElementById('btn-upload-images');
             if (uploadBtn) {
                 uploadBtn.addEventListener('change', function(e) {
                     var files = e.target.files;
                     if (!files || files.length === 0) return;
+
                     
                     var status = document.getElementById('upload-status');
                     if(status) { status.classList.remove('hidden'); status.innerText = 'Processing ' + files.length + ' image(s)...'; }
@@ -126,7 +142,7 @@
                                 var img = new Image();
                                 img.onload = function() {
                                     var canvas = document.createElement('canvas');
-                                    var maxDim = 400;
+                                    var maxDim = 300;
                                     var width = img.width;
                                     var height = img.height;
                                     
@@ -141,7 +157,7 @@
                                     var ctx = canvas.getContext('2d');
                                     ctx.drawImage(img, 0, 0, width, height);
                                     
-                                    var base64Str = canvas.toDataURL('image/png');
+                                    var base64Str = canvas.toDataURL('image/webp', 0.7);
                                     
                                     var fileNameNoExt = file.name.substring(0, file.name.lastIndexOf('.')) || file.name;
                                     window.imagesPool[fileNameNoExt] = base64Str;
