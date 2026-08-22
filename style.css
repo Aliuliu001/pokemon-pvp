@@ -1,4 +1,4 @@
-﻿
+
         @import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@600;800;900&family=Fredoka:wght@400;500;700&display=swap');
         body {
             font-family: 'Fredoka', sans-serif;
@@ -91,9 +91,9 @@
         @keyframes floatTear { 0% { transform: rotate(45deg) translate(0, 0) scale(0.5); opacity: 1; } 100% { transform: rotate(45deg) translate(var(--drift), -120px) scale(1.5); opacity: 0; } }
 
         .projectile { position: absolute; z-index: 1000; font-size: 3rem; text-shadow: 0 0 20px currentColor; pointer-events: none; transition: transform 0.6s cubic-bezier(0.5, 0, 0.5, 1); }
-        @keyframes flyAttack { 0% { transform: translate(0, 0) scale(1); } 50% { transform: translate(var(--dx-half), -150px) scale(1.8) rotate(180deg); } 100% { transform: translate(var(--dx), var(--dy)) scale(1) rotate(360deg); } }
-        @keyframes flyRocketRight { 0% { transform: translate(0, 0) scale(1.5) rotate(0deg); } 50% { transform: translate(var(--dx-half), -250px) scale(3) rotate(45deg); filter: drop-shadow(0 10px 20px rgba(255,100,0,0.8)); } 100% { transform: translate(var(--dx), var(--dy)) scale(2) rotate(90deg); } }
-        @keyframes flyRocketLeft { 0% { transform: translate(0, 0) scale(1.5) rotate(-90deg); } 50% { transform: translate(var(--dx-half), -250px) scale(3) rotate(-135deg); filter: drop-shadow(0 10px 20px rgba(255,100,0,0.8)); } 100% { transform: translate(var(--dx), var(--dy)) scale(2) rotate(-180deg); } }
+        @keyframes flyAttack { 0% { transform: translate(0, 0) scale(1); } 50% { transform: translate(var(--dx-half), -80px) scale(1.8) rotate(180deg); } 100% { transform: translate(var(--dx), var(--dy)) scale(1) rotate(360deg); } }
+        @keyframes flyRocketRight { 0% { transform: translate(0, 0) scale(1.5) rotate(0deg); } 50% { transform: translate(var(--dx-half), -120px) scale(3) rotate(45deg); filter: drop-shadow(0 10px 20px rgba(255,100,0,0.8)); } 100% { transform: translate(var(--dx), var(--dy)) scale(2) rotate(90deg); } }
+        @keyframes flyRocketLeft { 0% { transform: translate(0, 0) scale(1.5) rotate(-90deg); } 50% { transform: translate(var(--dx-half), -120px) scale(3) rotate(-135deg); filter: drop-shadow(0 10px 20px rgba(255,100,0,0.8)); } 100% { transform: translate(var(--dx), var(--dy)) scale(2) rotate(-180deg); } }
         @keyframes healAura { 0% { transform: scale(0); opacity: 1; } 100% { transform: scale(3); opacity: 0; } }
         .heal-effect { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); color: #22c55e; font-size: 5rem; animation: healAura 1s ease-out forwards; pointer-events: none; z-index: 50; }
 
