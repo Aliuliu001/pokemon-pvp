@@ -216,6 +216,7 @@
                     for(var i=0; i<c.count; i++) specialConfigs.push(c);
                 });
                 specialConfigs.sort(() => Math.random() - 0.5);
+                specialConfigs = specialConfigs.slice(0, 2);
                 
                 for (var i = 0; i < specialConfigs.length; i++) {
                     if (i < window.globalDeck.length) {
@@ -293,9 +294,21 @@
             
             var btn = document.createElement('button');
             btn.id = 'bonus-card-btn';
-            btn.className = "galaxy-bg relative h-full aspect-[4/5] rounded-xl md:rounded-2xl flex flex-col items-center justify-center text-white shadow-[0_0_30px_rgba(139,92,246,0.6)] border-4 border-indigo-400/50 hover:scale-105 transition-transform shrink-0 cursor-pointer ml-2 md:ml-4 group animate-bounce";
+            btn.className = "galaxy-bg relative h-full aspect-[4/5] rounded-xl md:rounded-2xl flex flex-col items-center justify-center text-white shadow-[0_0_30px_rgba(139,92,246,0.6)] border-4 border-indigo-400/50 hover:scale-105 transition-transform shrink-0 cursor-pointer ml-2 md:ml-4 group";
+            
+            var frozenHtml = '';
+            if (window.isSpecialModeActive && window.SKILL_ON_MYSTIC_ONLY) {
+                frozenHtml = `<div id="mystic-frozen-overlay" class="absolute inset-0 bg-blue-400/50 backdrop-blur-[3px] z-20 rounded-xl md:rounded-2xl transition-all duration-700 pointer-events-none flex flex-col items-center justify-center border-2 border-white/40 shadow-[inset_0_0_20px_rgba(255,255,255,0.8)] overflow-hidden">
+                    <div class="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/ice-pattern.png')] opacity-70"></div>
+                    <span class="text-4xl md:text-5xl drop-shadow-[0_0_10px_rgba(255,255,255,1)] z-30">🧊</span>
+                </div>`;
+            } else {
+                btn.classList.add('animate-bounce');
+            }
+
             btn.innerHTML = `
-                <span class="text-4xl sm:text-5xl md:text-7xl mb-2 drop-shadow-[0_0_15px_rgba(255,255,255,0.8)] group-hover:scale-110 transition-transform">🌌</span>
+                ${frozenHtml}
+                <span class="text-4xl sm:text-5xl md:text-7xl mb-2 drop-shadow-[0_0_15px_rgba(255,255,255,0.8)] group-hover:scale-110 transition-transform">🎁</span>
                 <span class="text-[10px] sm:text-xs md:text-sm font-black uppercase tracking-widest text-center text-indigo-200 z-10" style="text-shadow: 0 2px 4px rgba(0,0,0,0.8);">MYSTIC<br>BONUS</span>
             `;
             
@@ -337,15 +350,29 @@
             var canShow = false;
             if (window.bonusDrawn < window.MAX_BONUS_CARDS && window.globalDeck.length > 0) {
                 if (window.isSpecialModeActive && window.SKILL_ON_MYSTIC_ONLY) {
-                    if (window.judgedCards.size === window.currentHand.length) {
-                        var allCorrect = true;
-                        for (var val of window.judgedCards.values()) {
-                            if (val === false) { allCorrect = false; break; }
-                        }
-                        if (allCorrect) canShow = true;
+                    canShow = true; // Always show in hard mode, but it might be frozen
+                    var total = window.currentHand.length;
+                    var correct = 0;
+                    for (var val of window.judgedCards.values()) {
+                        if (val === true) correct++;
+                    }
+                    var overlay = document.getElementById('mystic-frozen-overlay');
+                    if (overlay) {
+                        var opacity = total > 0 ? 1 - (correct / total) : 1;
+                        overlay.style.opacity = opacity;
+                    }
+                    if (correct === total && total > 0) {
+                        btn.style.pointerEvents = 'auto';
+                        btn.classList.add('animate-bounce');
+                        if (overlay) overlay.style.display = 'none';
+                    } else {
+                        btn.style.pointerEvents = 'none';
+                        btn.classList.remove('animate-bounce');
+                        if (overlay) overlay.style.display = 'flex';
                     }
                 } else {
                     canShow = true;
+                    btn.style.pointerEvents = 'auto';
                 }
             }
             
