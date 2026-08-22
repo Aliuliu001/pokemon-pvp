@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="vi">
 <head>
     <meta charset="UTF-8">
@@ -110,7 +110,8 @@
 
         <!-- CARDS -->
         <div class="w-full flex flex-col items-center mt-4 md:mt-0 mb-4 md:mb-10 z-20 transition-all duration-300" id="hand-panel">
-            <h2 id="turn-indicator" class="text-3xl md:text-5xl font-black tarot-font text-white mb-6 md:mb-8 transition-all duration-300 text-center tracking-widest uppercase" style="text-shadow: 2px 2px 0 #000, -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 0 0 20px currentColor;">TEAM 1'S TURN</h2>
+            <h2 id="turn-indicator" class="text-3xl md:text-5xl font-black tarot-font text-white mb-2 transition-all duration-300 text-center tracking-widest uppercase" style="text-shadow: 2px 2px 0 #000, -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 0 0 20px currentColor;">TEAM 1'S TURN</h2>
+            <div id="read-timer-display" class="text-xl md:text-2xl text-yellow-400 font-bold mb-4 md:mb-6 hidden tracking-wider" style="text-shadow: 1px 1px 0 #000;"></div>
             <div id="active-hand" class="flex flex-row justify-center gap-2 sm:gap-4 md:gap-8 w-full max-w-5xl h-[20vh] sm:h-[25vh] md:h-[30vh] max-h-[260px]"></div>
         </div>
 
@@ -179,6 +180,16 @@
                         <input type="number" id="setting-global-time" class="w-full bg-slate-700 text-white text-sm p-2 rounded-lg outline-none border border-slate-500" value="180" min="30">
                     </div>
                     <div class="flex-1">
+                        <label class="text-slate-300 text-xs md:text-sm font-semibold block mb-1" title="Thời gian chờ đọc Front card">Read Time:</label>
+                        <select id="setting-read-time" class="w-full bg-slate-700 text-white text-sm p-2 rounded-lg outline-none border border-slate-500 cursor-pointer">
+                            <option value="0">Unlimited</option>
+                            <option value="15">15s</option>
+                            <option value="30">30s</option>
+                            <option value="45">45s</option>
+                            <option value="60">60s</option>
+                        </select>
+                    </div>
+                    <div class="flex-1">
                         <label class="text-slate-300 text-xs md:text-sm font-semibold block mb-1" title="Số lượng thẻ rút ra mỗi lượt">Cards/Turn:</label>
                         <input type="number" id="setting-cards-per-turn" class="w-full bg-slate-700 text-white text-sm p-2 rounded-lg outline-none border border-slate-500" value="3" min="1" max="7">
                     </div>
@@ -198,6 +209,7 @@
                             <input type="text" id="setting-custom-pokemon" class="flex-1 bg-slate-700 text-white text-sm p-2 rounded-lg outline-none border border-slate-500 placeholder-slate-400" placeholder="Pokédex IDs (e.g. 150, 151)">
                             <button id="btn-fetch-pokemon" class="bg-indigo-600 hover:bg-indigo-500 text-white px-3 py-2 rounded-lg font-bold text-sm transition-colors border border-indigo-400 shadow-[0_0_10px_rgba(79,70,229,0.5)]">Fetch</button>
                         </div>
+                        <div id="custom-pokemon-preview" class="flex gap-2 mt-2 flex-wrap min-h-[32px] empty:hidden"></div>
                     </div>
                     <div class="flex-1">
                         <label class="text-slate-300 text-xs md:text-sm font-semibold block mb-1">Background Image URL (Pinterest/Google):</label>

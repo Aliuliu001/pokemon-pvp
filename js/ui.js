@@ -15,12 +15,28 @@
             var bText = window.escapeHTML(rowData.bText);
             var bTime = window.escapeHTML(rowData.bTime);
 
+            var getImgTag = (id) => {
+                if(!id) return '';
+                if (window.imagesPool && window.imagesPool[id]) {
+                    return `<img src="${window.imagesPool[id]}" class="w-6 h-6 object-contain pointer-events-none" />`;
+                } else if (!isNaN(id)) {
+                    return `<img src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${id}.png" class="w-6 h-6 object-contain pointer-events-none" onerror="this.style.display='none'"/>`;
+                }
+                return '';
+            };
+
             var tr = document.createElement('tr');
             tr.className = "hover:bg-slate-800 transition-colors border-b border-slate-700/50";
             tr.innerHTML = `
-                <td class="border-r border-slate-600 p-0"><input type="text" data-row="${i}" data-col="0" class="w-full h-full bg-transparent px-1 py-2 outline-none focus:bg-slate-700 text-yellow-300 text-center font-bold" value="${fId}"></td>
+                <td class="border-r border-slate-600 p-0 relative">
+                    <div class="absolute left-1 top-1/2 -translate-y-1/2 w-6 h-6 flex items-center justify-center preview-0">${getImgTag(fId)}</div>
+                    <input type="text" data-row="${i}" data-col="0" class="w-full h-full bg-transparent pl-8 pr-1 py-2 outline-none focus:bg-slate-700 text-yellow-300 text-center font-bold" value="${fId}">
+                </td>
                 <td class="border-r border-slate-600 p-0"><input type="text" data-row="${i}" data-col="1" class="w-full h-full bg-transparent px-2 py-2 outline-none focus:bg-slate-700 text-yellow-300 font-bold" value="${fWord}"></td>
-                <td class="border-r border-slate-600 p-0 bg-slate-900/50"><input type="text" data-row="${i}" data-col="2" class="w-full h-full bg-transparent px-1 py-2 outline-none focus:bg-slate-700 text-green-300 text-center font-bold" value="${bImgId}"></td>
+                <td class="border-r border-slate-600 p-0 bg-slate-900/50 relative">
+                    <div class="absolute left-1 top-1/2 -translate-y-1/2 w-6 h-6 flex items-center justify-center preview-2">${getImgTag(bImgId)}</div>
+                    <input type="text" data-row="${i}" data-col="2" class="w-full h-full bg-transparent pl-8 pr-1 py-2 outline-none focus:bg-slate-700 text-green-300 text-center font-bold" value="${bImgId}">
+                </td>
                 <td class="border-r border-slate-600 p-0 bg-slate-900/50"><input type="text" data-row="${i}" data-col="3" class="w-full h-full bg-transparent px-2 py-2 outline-none focus:bg-slate-700 text-green-300 font-bold" value="${bText}"></td>
                 <td class="p-0 bg-slate-900/50"><input type="text" data-row="${i}" data-col="4" class="w-full h-full bg-transparent px-1 py-2 outline-none focus:bg-slate-700 text-red-400 text-center font-bold" value="${bTime}"></td>
             `;
@@ -118,6 +134,7 @@
             if(document.getElementById('setting-back-mode')) document.getElementById('setting-back-mode').value = window.DISPLAY_MODE.back;
             if(document.getElementById('setting-timer-enabled')) document.getElementById('setting-timer-enabled').value = window.GLOBAL_TIMER_ENABLED ? 'on' : 'off';
             if(document.getElementById('setting-global-time')) document.getElementById('setting-global-time').value = window.GLOBAL_GAME_TIME;
+            if(document.getElementById('setting-read-time')) document.getElementById('setting-read-time').value = window.READ_TIME;
             if(document.getElementById('setting-hp-t1')) document.getElementById('setting-hp-t1').value = window.TEAM1_MAX_HP;
             if(document.getElementById('setting-hp-t2')) document.getElementById('setting-hp-t2').value = window.TEAM2_MAX_HP;
             if(document.getElementById('setting-bg-image')) document.getElementById('setting-bg-image').value = localStorage.getItem('pokemonClashBgImage') || '';
@@ -354,8 +371,42 @@
             }
         };
         
-        window.startTimer = function() { if(window.isGameStarted) return; window.isGameStarted = true; document.getElementById('global-status').classList.add('hidden'); document.getElementById('game-timer-container').classList.remove('hidden'); window.currentGameTime = window.GLOBAL_GAME_TIME; window.updateTimerUI(); clearInterval(window.gameTimerInterval); window.gameTimerInterval = setInterval(() => { window.currentGameTime--; window.updateTimerUI(); if(window.currentGameTime <= 0) window.triggerWin(true); }, 1000); };
+        window.startTimer = function() { if(window.isGameStarted) return; window.isGameStarted = true; window.stopReadTimer(); document.getElementById('global-status').classList.add('hidden'); document.getElementById('game-timer-container').classList.remove('hidden'); window.currentGameTime = window.GLOBAL_GAME_TIME; window.updateTimerUI(); clearInterval(window.gameTimerInterval); window.gameTimerInterval = setInterval(() => { window.currentGameTime--; window.updateTimerUI(); if(window.currentGameTime <= 0) window.triggerWin(true); }, 1000); };
         window.stopGameGlobalTimer = function() { clearInterval(window.gameTimerInterval); window.isGameStarted = false; };
+        
+        window.readTimerInterval = null;
+        window.startReadTimer = function() {
+            window.stopReadTimer();
+            if (!window.READ_TIME || window.READ_TIME <= 0) return;
+            var display = document.getElementById('read-timer-display');
+            if(!display) return;
+            display.classList.remove('hidden');
+            var timeLeft = window.READ_TIME;
+            display.innerText = 'TIME TO READ: ' + timeLeft + 's';
+            window.readTimerInterval = setInterval(() => {
+                timeLeft--;
+                display.innerText = 'TIME TO READ: ' + timeLeft + 's';
+                if (timeLeft <= 0) {
+                    window.stopReadTimer();
+                    window.playSound('boom');
+                    window.triggerMegaExplosion(window.currentTurn);
+                    window.applyHPChange(window.currentTurn, -1, true, false);
+                    var statusElNode = document.getElementById('global-status');
+                    if(statusElNode) {
+                        statusElNode.innerHTML = `<span class="bg-red-600/90 px-8 py-4 rounded-3xl border-4 border-red-300 text-white drop-shadow-[0_0_20px_rgba(220,38,38,1)]">HẾT GIỜ ĐỌC! BÙM!</span>`;
+                        statusElNode.classList.remove('hidden');
+                        setTimeout(() => statusElNode.classList.add('hidden'), 2500);
+                    }
+                    setTimeout(() => { if (!window.isGameOver) window.switchTurn(); }, 3000);
+                }
+            }, 1000);
+        };
+        
+        window.stopReadTimer = function() {
+            clearInterval(window.readTimerInterval);
+            var display = document.getElementById('read-timer-display');
+            if(display) display.classList.add('hidden');
+        };
 
         window.updateSpecialModeUI = function() {
             var ind = document.getElementById('special-mode-indicator');

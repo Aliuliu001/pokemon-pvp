@@ -89,10 +89,37 @@
                             
                             if (trgCol < 5) {
                                 var input = document.querySelector(`input[data-row="${trgRow}"][data-col="${trgCol}"]`);
-                                if (input) input.value = colStr.trim();
+                                if (input) {
+                                    input.value = colStr.trim();
+                                    input.dispatchEvent(new Event('input', { bubbles: true }));
+                                }
                             }
                         });
                     });
+                });
+                
+                gridBody.addEventListener('input', (e) => {
+                    var target = e.target;
+                    if (target.tagName === 'INPUT') {
+                        var col = target.getAttribute('data-col');
+                        if (col === '0' || col === '2') {
+                            var val = target.value.trim();
+                            var previewDiv = target.parentElement.querySelector('.preview-' + col);
+                            if (previewDiv) {
+                                if (!val) {
+                                    previewDiv.innerHTML = '';
+                                } else {
+                                    if (window.imagesPool && window.imagesPool[val]) {
+                                        previewDiv.innerHTML = `<img src="${window.imagesPool[val]}" class="w-6 h-6 object-contain pointer-events-none" />`;
+                                    } else if (!isNaN(val)) {
+                                        previewDiv.innerHTML = `<img src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${val}.png" class="w-6 h-6 object-contain pointer-events-none" onerror="this.style.display='none'"/>`;
+                                    } else {
+                                        previewDiv.innerHTML = '';
+                                    }
+                                }
+                            }
+                        }
+                    }
                 });
             }
 
@@ -199,6 +226,7 @@
                     backMode: document.getElementById('setting-back-mode')?.value || 'full',
                     timerEnabled: document.getElementById('setting-timer-enabled')?.value === 'on',
                     globalTime: parseInt(document.getElementById('setting-global-time')?.value) || 180,
+                    readTime: parseInt(document.getElementById('setting-read-time')?.value) || 0,
                     hp1: parseInt(document.getElementById('setting-hp-t1')?.value) || 7,
                     hp2: parseInt(document.getElementById('setting-hp-t2')?.value) || 7,
                     cardsPerTurn: parseInt(document.getElementById('setting-cards-per-turn')?.value) || 3,
@@ -274,6 +302,34 @@
                 target.classList.replace('bg-blue-600', 'bg-green-600');
                 setTimeout(() => { target.innerText = orig; target.classList.replace('bg-green-600', 'bg-blue-600'); }, 1500);
             });
+
+            attachBtn('btn-download-config', 'click', () => {
+                window.downloadConfigJSON();
+                var target = document.getElementById('btn-download-config');
+                var orig = target.innerText;
+                target.innerText = "Downloaded!"; target.classList.replace('bg-blue-600', 'bg-green-600');
+                setTimeout(() => { target.innerText = orig; target.classList.replace('bg-green-600', 'bg-blue-600'); }, 1500);
+            });
+            
+            var customPokeInput = document.getElementById('setting-custom-pokemon');
+            if (customPokeInput) {
+                customPokeInput.addEventListener('input', (e) => {
+                    var val = e.target.value;
+                    var preview = document.getElementById('custom-pokemon-preview');
+                    if(!preview) return;
+                    preview.innerHTML = '';
+                    if(!val) return;
+                    var ids = val.split(',').map(id => id.trim()).filter(id => id);
+                    ids.forEach(id => {
+                        var img = document.createElement('img');
+                        img.src = `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/home/${id.toLowerCase()}.png`;
+                        img.className = "w-8 h-8 md:w-10 md:h-10 object-contain bg-slate-800 rounded p-1 border border-slate-600";
+                        img.title = id;
+                        img.onerror = function() { this.src = `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${id.toLowerCase()}.png`; };
+                        preview.appendChild(img);
+                    });
+                });
+            }
 
             attachBtn('btn-fetch-pokemon', 'click', async () => {
                 var input = document.getElementById('setting-custom-pokemon').value;
@@ -393,6 +449,9 @@
                 localStorage.setItem('pokemonClashDisplayMode', JSON.stringify(window.DISPLAY_MODE));
                 var gt = parseInt(document.getElementById('setting-global-time')?.value);
                 if (gt && gt > 0) { window.GLOBAL_GAME_TIME = gt; localStorage.setItem('pokemonClashGlobalTime', window.GLOBAL_GAME_TIME); }
+                var rt = parseInt(document.getElementById('setting-read-time')?.value) || 0;
+                window.READ_TIME = rt;
+                localStorage.setItem('pokemonClashReadTime', window.READ_TIME);
                 window.GLOBAL_TIMER_ENABLED = document.getElementById('setting-timer-enabled')?.value === 'on';
                 localStorage.setItem('pokemonClashTimerEnabled', window.GLOBAL_TIMER_ENABLED);
                 
