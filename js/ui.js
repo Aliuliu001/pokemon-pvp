@@ -6,12 +6,6 @@
             return res;
         };
 
-        window.renderGrid = function(dataArray) {
-            var gridBody = document.getElementById('data-grid-body');
-            if (!gridBody) return;
-            gridBody.innerHTML = '';
-            var safeData = (dataArray && Array.isArray(dataArray)) ? dataArray : window.DEFAULT_JSON_DATA;
-            for (var i = 0; i < window.MAX_ROWS; i++) {
         window.addGridRow = function(i, rowData = {}) {
             var gridBody = document.getElementById('data-grid-body');
             if (!gridBody) return;
@@ -33,10 +27,11 @@
             gridBody.appendChild(tr);
         };
 
-        window.createSettingsGrid = function(safeData) {
+        window.renderGrid = function(dataArray) {
             var gridBody = document.getElementById('data-grid-body');
             if (!gridBody) return;
             gridBody.innerHTML = '';
+            var safeData = (dataArray && Array.isArray(dataArray)) ? dataArray : window.DEFAULT_JSON_DATA;
             
             if (safeData && safeData.length > window.MAX_ROWS) {
                 window.MAX_ROWS = safeData.length + 20; 
