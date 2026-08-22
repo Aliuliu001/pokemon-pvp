@@ -205,30 +205,23 @@
                     </div>
                 </div>
 
-                <!-- Image Pool Upload -->
-                <div class="mt-4 p-4 bg-slate-800 rounded-xl border border-slate-600">
-                    <h4 class="text-white font-bold text-sm mb-2 uppercase flex justify-between items-center">
-                        Image Pool (Offline Base64)
-                        <span id="upload-status" class="text-yellow-400 text-xs hidden"></span>
-                    </h4>
-                    <div class="flex flex-col md:flex-row items-start md:items-center gap-3">
-                        <label class="px-4 py-2 bg-blue-600 hover:bg-blue-500 text-white rounded cursor-pointer font-semibold text-sm transition-colors shadow-lg shrink-0">
+            </div>
+
+            <div class="flex flex-col xl:flex-row justify-between items-start xl:items-end gap-3 mb-3 shrink-0">
+                <div class="flex flex-col gap-1 w-full xl:w-auto">
+                    <div class="flex items-center gap-2">
+                        <label class="px-3 py-1.5 bg-blue-600 hover:bg-blue-500 text-white rounded cursor-pointer font-semibold text-xs transition-colors shadow-lg shrink-0 flex items-center">
                             Upload Images
                             <input type="file" id="btn-upload-images" class="hidden" multiple accept="image/*">
                         </label>
-                        <button id="btn-clear-images" class="px-3 py-2 bg-red-600 hover:bg-red-500 text-white rounded font-semibold text-xs transition-colors shrink-0">Clear Pool</button>
-                        <p class="text-xs text-slate-400 leading-tight">Images will be resized to max 300px (aspect ratio kept), saved as Compressed WebP (transparency kept), and stored in LocalStorage (Max 5MB).</p>
+                        <button id="btn-clear-images" class="px-3 py-1.5 bg-red-600 hover:bg-red-500 text-white rounded font-semibold text-xs transition-colors shrink-0">Clear Pool</button>
+                        <span id="upload-status" class="text-yellow-400 text-xs hidden"></span>
                     </div>
+                    <p class="text-[10px] sm:text-xs text-slate-400 leading-tight">Images saved as WebP in LocalStorage (Max 5MB).</p>
+                    <p class="text-slate-300 text-[10px] sm:text-xs mt-1">Paste Excel data below. <b class="text-yellow-400">Note:</b> Empty Time = No bomb timer.</p>
                 </div>
-
-            </div>
-
-            <div class="flex flex-col md:flex-row justify-between items-start md:items-end gap-3 mb-3 shrink-0">
-                <p class="text-slate-300 text-xs md:text-sm">
-                    Paste 5 columns from Excel here. <br>
-                    <b class="text-yellow-400">Note:</b> Empty Time column = No bomb timer for that card.
-                </p>
-                <div class="flex flex-wrap gap-2 w-full justify-end">
+                
+                <div class="flex flex-wrap gap-2 w-full xl:w-auto justify-end">
                     <div class="flex items-center bg-slate-700 rounded-lg overflow-hidden border border-blue-500 shadow-inner">
                         <select id="auto-col-select" class="bg-slate-800 text-yellow-400 px-2 py-1.5 outline-none text-xs sm:text-sm font-bold border-r border-slate-500 cursor-pointer">
                             <option value="0">Col 1</option><option value="1">Col 2</option><option value="2">Col 3</option><option value="3">Col 4</option><option value="4">Col 5</option>
@@ -438,6 +431,6 @@
     <script src="js/data.js?v=639229997864466738"></script>
     <script src="js/ui.js?v=639229968141188102"></script>
     <script src="js/logic.js?v=639229997864466738"></script>
-    <script src="js/main.js?v=639229997864466738"></script>
+    <script src="js/main.js?v=639230000915375943"></script>
 </body>
 </html>
