@@ -343,6 +343,7 @@
                     } catch(e){}
                     
                     var allCustom = existingCustom.concat(newPokes);
+                    if (allCustom.length > 12) allCustom = allCustom.slice(-12);
                     localStorage.setItem('pokemonClashCustomTeams', JSON.stringify(allCustom));
                     
                     statusEl.innerText = `Successfully added ${newPokes.length} Pokémon! Refresh to see them.`;

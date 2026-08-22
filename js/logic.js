@@ -88,24 +88,47 @@
         window.populateSelects = function() {
             var s1 = document.getElementById('team1-select'); 
             var s2 = document.getElementById('team2-select');
-            if(!s1 || !s2) return;
-            s1.innerHTML = ''; s2.innerHTML = '';
-            window.POKEMON_TEAMS.forEach(p => { 
-                s1.add(new Option(p.name, p.id)); s2.add(new Option(p.name, p.id)); 
-                s1.options[s1.options.length-1].className = "bg-slate-800 text-white font-sans text-base"; 
-                s2.options[s2.options.length-1].className = "bg-slate-800 text-white font-sans text-base";
-            });
-            s1.value = window.teams.team1.config.id; s2.value = window.teams.team2.config.id;
-            
-            if (!s1.dataset.listenerAttached) {
-                s1.addEventListener('change', (e) => { window.teams.team1.config = window.POKEMON_TEAMS.find(p => p.id === e.target.value); window.applyTheme('team1'); window.updateTurnUI(); window.updateHPUI(); });
-                s1.dataset.listenerAttached = 'true';
-            }
-            if (!s2.dataset.listenerAttached) {
-                s2.addEventListener('change', (e) => { window.teams.team2.config = window.POKEMON_TEAMS.find(p => p.id === e.target.value); window.applyTheme('team2'); window.updateTurnUI(); window.updateHPUI(); });
-                s2.dataset.listenerAttached = 'true';
-            }
+            if(s1) s1.innerText = window.teams.team1.config.name;
+            if(s2) s2.innerText = window.teams.team2.config.name;
         };
+
+        window.openAvatarModal = function(teamId) {
+            var modal = document.getElementById('avatar-modal');
+            var grid = document.getElementById('avatar-grid');
+            if(!modal || !grid) return;
+            
+            grid.innerHTML = '';
+            window.POKEMON_TEAMS.forEach(p => {
+                var btn = document.createElement('div');
+                btn.className = "flex flex-col items-center justify-center bg-slate-700 hover:bg-slate-600 border-2 rounded-xl p-2 cursor-pointer transition-transform hover:scale-105";
+                btn.style.borderColor = p.main;
+                btn.innerHTML = `
+                    <div class="w-16 h-16 md:w-24 md:h-24 mb-2">
+                        <img src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/home/${p.id}.png" class="w-full h-full object-contain filter drop-shadow-[0_0_8px_${p.main}]" alt="${p.name}" onerror="this.src='https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${p.id}.png'">
+                    </div>
+                    <span class="text-white font-bold text-[10px] md:text-xs text-center">${p.name}</span>
+                `;
+                btn.onclick = () => {
+                    window.teams[teamId].config = p;
+                    window.applyTheme(teamId);
+                    window.updateTurnUI();
+                    window.updateHPUI();
+                    window.populateSelects();
+                    modal.classList.add('hidden');
+                    modal.classList.remove('flex');
+                };
+                grid.appendChild(btn);
+            });
+            
+            modal.classList.remove('hidden');
+            modal.classList.add('flex');
+        };
+
+        // Close avatar modal
+        document.getElementById('btn-close-avatar-modal')?.addEventListener('click', () => {
+            var m = document.getElementById('avatar-modal');
+            if(m) { m.classList.add('hidden'); m.classList.remove('flex'); }
+        });
         
         window.applyTheme = function(teamKey) {
             var team = window.teams[teamKey];

@@ -62,6 +62,9 @@ window.applyBackground = function() {
                 var parsed = JSON.parse(customTeams);
                 if (Array.isArray(parsed)) window.POKEMON_TEAMS = window.POKEMON_TEAMS.concat(parsed);
             }
+            if (window.POKEMON_TEAMS.length > 12) {
+                window.POKEMON_TEAMS = window.POKEMON_TEAMS.slice(-12);
+            }
         } catch (e) { console.error(e); }
 
         window.TYPE_ICONS = {
