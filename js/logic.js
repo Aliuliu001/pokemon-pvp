@@ -216,7 +216,6 @@
                     for(var i=0; i<c.count; i++) specialConfigs.push(c);
                 });
                 specialConfigs.sort(() => Math.random() - 0.5);
-                specialConfigs = specialConfigs.slice(0, window.MAX_SKILLS_PER_TURN || 2);
                 
                 for (var i = 0; i < specialConfigs.length; i++) {
                     if (i < window.globalDeck.length) {
@@ -261,7 +260,8 @@
                     var card = window.globalDeck.pop();
                     
                     if (card.isSpecial) {
-                        if (specialCount < 2 || loopGuard > 2) {
+                        var maxSkills = window.MAX_SKILLS_PER_TURN !== undefined && !isNaN(window.MAX_SKILLS_PER_TURN) ? window.MAX_SKILLS_PER_TURN : 2;
+                        if (specialCount < maxSkills || loopGuard > 2) {
                             specialCount++;
                             window.currentHand.push({ ...card, used: false, uniqueId: Math.random().toString(36).substr(2, 9) });
                         } else {
