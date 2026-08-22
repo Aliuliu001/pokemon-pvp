@@ -7,7 +7,7 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="style.css">
 </head>
-<body class="p-1 md:p-2 pb-6 flex flex-col items-center relative h-screen">
+<body class="p-1 md:p-2 pb-6 flex flex-col items-center relative min-h-screen overflow-x-hidden">
 
 <div class="w-full flex flex-col items-center justify-start z-10 pointer-events-none mt-4 shrink-0 drop-shadow-xl">
         <h1 id="main-title" class="text-4xl md:text-6xl font-black tarot-font text-white tracking-widest text-center" style="text-shadow: 2px 2px 0 #000, -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 2px 4px 5px rgba(0,0,0,0.8);">POKEMON CASTLE BATTLE</h1>
@@ -264,6 +264,11 @@
                     </thead>
                     <tbody id="data-grid-body"></tbody>
                 </table>
+                <div class="w-full flex justify-center py-3 bg-slate-800 border-t border-slate-600">
+                    <button id="btn-add-rows" class="px-5 py-2 bg-slate-600 hover:bg-slate-500 text-white rounded-xl text-sm font-bold shadow-lg transition-colors border border-slate-500">
+                        + Add 50 Rows
+                    </button>
+                </div>
             </div>
             
             <div class="flex justify-end gap-3 mt-4 w-full shrink-0">
@@ -412,9 +417,9 @@
         </div>
     </div>
 
-    <script src="js/data.js?v=639229956485801404"></script>
-    <script src="js/ui.js?v=639229956485801404"></script>
-    <script src="js/logic.js?v=639229956485801404"></script>
-    <script src="js/main.js?v=639229956485801404"></script>
+    <script src="js/data.js?v=639229964480091269"></script>
+    <script src="js/ui.js?v=639229964480091269"></script>
+    <script src="js/logic.js?v=639229964480091269"></script>
+    <script src="js/main.js?v=639229964480091269"></script>
 </body>
 </html>

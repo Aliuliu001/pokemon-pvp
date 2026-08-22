@@ -1,4 +1,4 @@
-﻿        window.initGame = function() {
+        window.initGame = function() {
             window.isGameOver = false; 
             window.isProcessingModal = false; 
             window.stopGameGlobalTimer(); 
@@ -81,12 +81,30 @@
                         cols.forEach((colStr, cIdx) => {
                             var trgRow = startRow + rIdx;
                             var trgCol = startCol + cIdx;
-                            if (trgRow < window.MAX_ROWS && trgCol < 5) {
+                            
+                            while (trgRow >= window.MAX_ROWS) {
+                                window.addGridRow(window.MAX_ROWS);
+                                window.MAX_ROWS++;
+                            }
+                            
+                            if (trgCol < 5) {
                                 var input = document.querySelector(`input[data-row="${trgRow}"][data-col="${trgCol}"]`);
                                 if (input) input.value = colStr.trim();
                             }
                         });
                     });
+                });
+            }
+
+            var btnAddRows = document.getElementById('btn-add-rows');
+            if (btnAddRows) {
+                btnAddRows.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    var limit = window.MAX_ROWS + 50;
+                    while (window.MAX_ROWS < limit) {
+                        window.addGridRow(window.MAX_ROWS);
+                        window.MAX_ROWS++;
+                    }
                 });
             }
 

@@ -1,12 +1,10 @@
-(function() {
-    if (typeof window !== 'undefined') {
-        window.imagesPool = {};
-        try {
-            var storedPool = localStorage.getItem('pokemonClashImagePool');
-            if (storedPool) window.imagesPool = JSON.parse(storedPool);
-        } catch(e) { console.warn("Failed to parse imagesPool", e); }
-        
-        window.applyBackground = function() {
+window.imagesPool = {};
+try {
+    var storedPool = localStorage.getItem('pokemonClashImagePool');
+    if (storedPool) window.imagesPool = JSON.parse(storedPool);
+} catch(e) { console.warn("Failed to parse imagesPool", e); }
+
+window.applyBackground = function() {
             var savedBg = localStorage.getItem("pokemonClashBgImage");
             if (savedBg && savedBg.trim() !== "") {
                 document.body.style.backgroundImage = "url(" + savedBg + ")";

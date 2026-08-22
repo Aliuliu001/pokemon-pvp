@@ -12,23 +12,38 @@
             gridBody.innerHTML = '';
             var safeData = (dataArray && Array.isArray(dataArray)) ? dataArray : window.DEFAULT_JSON_DATA;
             for (var i = 0; i < window.MAX_ROWS; i++) {
-                var row = safeData[i] || {};
-                var fId = escapeHTML(row.fId);
-                var fWord = escapeHTML(row.fWord);
-                var bImgId = escapeHTML(row.bImgId);
-                var bText = escapeHTML(row.bText);
-                var bTime = escapeHTML(row.bTime);
+        window.addGridRow = function(i, rowData = {}) {
+            var gridBody = document.getElementById('data-grid-body');
+            if (!gridBody) return;
+            var fId = window.escapeHTML(rowData.fId);
+            var fWord = window.escapeHTML(rowData.fWord);
+            var bImgId = window.escapeHTML(rowData.bImgId);
+            var bText = window.escapeHTML(rowData.bText);
+            var bTime = window.escapeHTML(rowData.bTime);
 
-                var tr = document.createElement('tr');
-                tr.className = "hover:bg-slate-800 transition-colors border-b border-slate-700/50";
-                tr.innerHTML = `
-                    <td class="border-r border-slate-600 p-0"><input type="text" data-row="${i}" data-col="0" class="w-full h-full bg-transparent px-1 py-2 outline-none focus:bg-slate-700 text-yellow-300 text-center font-bold" value="${fId}"></td>
-                    <td class="border-r border-slate-600 p-0"><input type="text" data-row="${i}" data-col="1" class="w-full h-full bg-transparent px-2 py-2 outline-none focus:bg-slate-700 text-yellow-300 font-bold" value="${fWord}"></td>
-                    <td class="border-r border-slate-600 p-0 bg-slate-900/50"><input type="text" data-row="${i}" data-col="2" class="w-full h-full bg-transparent px-1 py-2 outline-none focus:bg-slate-700 text-green-300 text-center font-bold" value="${bImgId}"></td>
-                    <td class="border-r border-slate-600 p-0 bg-slate-900/50"><input type="text" data-row="${i}" data-col="3" class="w-full h-full bg-transparent px-2 py-2 outline-none focus:bg-slate-700 text-green-300 font-bold" value="${bText}"></td>
-                    <td class="p-0 bg-slate-900/50"><input type="text" data-row="${i}" data-col="4" class="w-full h-full bg-transparent px-1 py-2 outline-none focus:bg-slate-700 text-red-400 text-center font-bold" value="${bTime}"></td>
-                `;
-                gridBody.appendChild(tr);
+            var tr = document.createElement('tr');
+            tr.className = "hover:bg-slate-800 transition-colors border-b border-slate-700/50";
+            tr.innerHTML = `
+                <td class="border-r border-slate-600 p-0"><input type="text" data-row="${i}" data-col="0" class="w-full h-full bg-transparent px-1 py-2 outline-none focus:bg-slate-700 text-yellow-300 text-center font-bold" value="${fId}"></td>
+                <td class="border-r border-slate-600 p-0"><input type="text" data-row="${i}" data-col="1" class="w-full h-full bg-transparent px-2 py-2 outline-none focus:bg-slate-700 text-yellow-300 font-bold" value="${fWord}"></td>
+                <td class="border-r border-slate-600 p-0 bg-slate-900/50"><input type="text" data-row="${i}" data-col="2" class="w-full h-full bg-transparent px-1 py-2 outline-none focus:bg-slate-700 text-green-300 text-center font-bold" value="${bImgId}"></td>
+                <td class="border-r border-slate-600 p-0 bg-slate-900/50"><input type="text" data-row="${i}" data-col="3" class="w-full h-full bg-transparent px-2 py-2 outline-none focus:bg-slate-700 text-green-300 font-bold" value="${bText}"></td>
+                <td class="p-0 bg-slate-900/50"><input type="text" data-row="${i}" data-col="4" class="w-full h-full bg-transparent px-1 py-2 outline-none focus:bg-slate-700 text-red-400 text-center font-bold" value="${bTime}"></td>
+            `;
+            gridBody.appendChild(tr);
+        };
+
+        window.createSettingsGrid = function(safeData) {
+            var gridBody = document.getElementById('data-grid-body');
+            if (!gridBody) return;
+            gridBody.innerHTML = '';
+            
+            if (safeData && safeData.length > window.MAX_ROWS) {
+                window.MAX_ROWS = safeData.length + 20; 
+            }
+
+            for (var i = 0; i < window.MAX_ROWS; i++) {
+                window.addGridRow(i, safeData[i] || {});
             }
         };
 
