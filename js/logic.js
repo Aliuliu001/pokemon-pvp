@@ -478,6 +478,20 @@
                         }, 3000);
                     } else {
                         window.playSound('defuse'); 
+                        if (!window.isSpecialModeActive) {
+                            var correctIndices = [];
+                            window.judgedCards.forEach((val, cIdx) => {
+                                if (val === true) correctIndices.push(cIdx);
+                            });
+                            if (correctIndices.length > 0) {
+                                var randomIdx = correctIndices[Math.floor(Math.random() * correctIndices.length)];
+                                setTimeout(() => {
+                                    if (!window.isGameOver && !window.isGamePaused && !window.isProcessingModal && window.currentHand && window.currentHand[randomIdx]) {
+                                        window.openModal(window.currentHand[randomIdx], randomIdx);
+                                    }
+                                }, 800);
+                            }
+                        }
                     }
                 } else {
                     window.playSound('tick');
