@@ -111,8 +111,8 @@
                                 } else {
                                     if (window.imagesPool && window.imagesPool[val]) {
                                         previewDiv.innerHTML = `<img src="${window.imagesPool[val]}" class="w-6 h-6 object-contain pointer-events-none" />`;
-                                    } else if (!isNaN(val)) {
-                                        previewDiv.innerHTML = `<img src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${val}.png" class="w-6 h-6 object-contain pointer-events-none" onerror="this.style.display='none'"/>`;
+                                    } else if (String(val).startsWith('http') || String(val).startsWith('data:image')) {
+                                        previewDiv.innerHTML = `<img src="${val}" class="w-6 h-6 object-contain pointer-events-none" onerror="this.style.display='none'"/>`;
                                     } else {
                                         previewDiv.innerHTML = '';
                                     }

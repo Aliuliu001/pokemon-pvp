@@ -20,8 +20,8 @@
                 if(!id) return '';
                 if (window.imagesPool && window.imagesPool[id]) {
                     return `<img src="${window.imagesPool[id]}" class="w-6 h-6 object-contain pointer-events-none" />`;
-                } else if (!isNaN(id)) {
-                    return `<img src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${id}.png" class="w-6 h-6 object-contain pointer-events-none" onerror="this.style.display='none'"/>`;
+                } else if (String(id).startsWith('http') || String(id).startsWith('data:image')) {
+                    return `<img src="${id}" class="w-6 h-6 object-contain pointer-events-none" onerror="this.style.display='none'"/>`;
                 }
                 return '';
             };
