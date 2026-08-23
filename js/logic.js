@@ -308,10 +308,22 @@
             `;
             
             btn.addEventListener('click', () => {
-                if (window.isGameOver || window.isGamePaused) return;
+                if (window.isGameOver || window.isGamePaused || window.isProcessingModal) return;
+                if (!window.isGameStarted) {
+                    if (window.GLOBAL_TIMER_ENABLED) window.startTimer();
+                    else {
+                        window.isGameStarted = true;
+                        var gs = document.getElementById('global-status');
+                        if (gs) gs.classList.add('hidden');
+                    }
+                }
                 window.playSound('tick');
                 window.bonusDrawn++;
                 
+                if (window.globalDeck.length === 0) {
+                    window.buildDeck();
+                }
+
                 var card = window.globalDeck.pop();
                 if (card) {
                     if (window.isSpecialModeActive && window.SKILL_ON_MYSTIC_ONLY) {
@@ -330,6 +342,32 @@
                     window.currentHand.push(cardToPush);
                     var newIdx = window.currentHand.length - 1;
                     window.renderSingleCard(cardToPush, newIdx);
+
+                    // Mark as judged correct automatically
+                    window.judgedCards.set(newIdx, true);
+                    var rm = document.getElementById(`read-marker-${newIdx}`);
+                    if (rm) {
+                        rm.classList.replace('hidden', 'flex');
+                        rm.classList.remove('bg-red-500');
+                        rm.classList.add('bg-green-500');
+                        rm.innerHTML = '✅';
+                    }
+                    var cards = document.querySelectorAll('#active-hand .card');
+                    if (cards && cards[newIdx]) {
+                        var inner = cards[newIdx].querySelector('.card-inner');
+                        if (inner) {
+                            inner.classList.add('shadow-[0_0_15px_rgba(34,197,94,0.8)]');
+                        }
+                    }
+
+                    // Auto-open modal after card appear animation completes (~600ms)
+                    setTimeout(() => {
+                        if (!window.isGameOver && !window.isGamePaused && !window.isProcessingModal && window.currentHand && window.currentHand[newIdx]) {
+                            if (window.stopTurnTimer) window.stopTurnTimer();
+                            window.playSound('flip');
+                            window.openModal(cardToPush, newIdx);
+                        }
+                    }, 600);
                 }
                 window.updateBonusButton();
             });
@@ -544,6 +582,7 @@
 
         window.openModal = function(cardObj, handIndex) {
             if (window.isProcessingModal || window.isGamePaused) return;
+            if (window.stopTurnTimer) window.stopTurnTimer();
             window.isProcessingModal = true;
             window.currentActiveCardObj = { cardObj, handIndex };
             
