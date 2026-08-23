@@ -308,6 +308,7 @@
             `;
             
             btn.addEventListener('click', () => {
+                if (window.isGameOver || window.isGamePaused) return;
                 window.playSound('tick');
                 window.bonusDrawn++;
                 
@@ -427,7 +428,7 @@
             setTimeout(() => card.classList.remove('animate-bounce'), 1000);
             
             const markCard = (isCorrect) => {
-                if (window.isGameOver) return;
+                if (window.isGameOver || window.isGamePaused) return;
                 if (!window.isGameStarted) { if (window.GLOBAL_TIMER_ENABLED) window.startTimer(); else { window.isGameStarted = true; document.getElementById('global-status').classList.add('hidden'); } }
                 
                 window.judgedCards.set(idx, isCorrect);
@@ -520,8 +521,29 @@
         };
 
 
+        window._fuseRemaining = 0;
+        window._fuseTotal = 0;
+        window._fuseRunning = false;
+
+        window.updateFuseUI = function() {
+            var fuseBar = document.getElementById('fuse-bar'); 
+            var fuseText = document.getElementById('fuse-text');
+            if (!fuseBar || !fuseText) return;
+            var totalTime = window._fuseTotal || 1;
+            var timeLeft = Math.max(0, window._fuseRemaining);
+            const pct = (timeLeft / totalTime) * 100; 
+            fuseBar.style.width = `${pct}%`; 
+            fuseText.innerText = `${timeLeft.toFixed(1)}s`;
+            if (pct < 30) { 
+                fuseBar.classList.replace('bg-yellow-400', 'bg-red-500'); 
+                if (Math.floor(timeLeft * 10) % 2 === 0) window.playSound('tick'); 
+            } else if (pct < 60) { 
+                fuseBar.classList.replace('bg-green-500', 'bg-yellow-400'); 
+            }
+        };
+
         window.openModal = function(cardObj, handIndex) {
-            if (window.isProcessingModal) return;
+            if (window.isProcessingModal || window.isGamePaused) return;
             window.isProcessingModal = true;
             window.currentActiveCardObj = { cardObj, handIndex };
             
@@ -594,6 +616,7 @@
             }
 
             clearInterval(window.bombInterval);
+            window.bombInterval = null;
             var fuseContainer = document.getElementById('fuse-container'); 
             var fuseBar = document.getElementById('fuse-bar'); 
             var fuseText = document.getElementById('fuse-text');
@@ -601,20 +624,30 @@
 
             if (timeLimit > 0) {
                 fuseContainer?.classList.remove('hidden'); 
-                let timeLeft = timeLimit; let totalTime = timeLimit;
+                window._fuseTotal = timeLimit;
+                window._fuseRemaining = timeLimit;
+                window._fuseRunning = true;
                 if(fuseBar) { fuseBar.style.width = '100%'; fuseBar.className = "h-full bg-green-500 transition-all duration-100 ease-linear ml-auto"; }
-                if(fuseText) fuseText.innerText = `${timeLeft.toFixed(1)}s`;
+                if(fuseText) fuseText.innerText = `${window._fuseRemaining.toFixed(1)}s`;
                 
                 window.bombInterval = setInterval(() => {
-                    timeLeft -= 0.1;
-                    if (timeLeft <= 0) { timeLeft = 0; clearInterval(window.bombInterval); window.handleAction('miss'); } 
-                    const pct = (timeLeft / totalTime) * 100; 
-                    if(fuseBar) fuseBar.style.width = `${pct}%`; 
-                    if(fuseText) fuseText.innerText = `${timeLeft.toFixed(1)}s`;
-                    if (pct < 30) { fuseBar?.classList.replace('bg-yellow-400', 'bg-red-500'); if (Math.floor(timeLeft*10)%2===0) window.playSound('tick'); } 
-                    else if (pct < 60) { fuseBar?.classList.replace('bg-green-500', 'bg-yellow-400'); }
+                    if (window.isGamePaused) return;
+                    window._fuseRemaining -= 0.1;
+                    if (window._fuseRemaining <= 0) { 
+                        window._fuseRemaining = 0; 
+                        clearInterval(window.bombInterval); 
+                        window.bombInterval = null;
+                        window._fuseRunning = false;
+                        window.handleAction('miss'); 
+                        return;
+                    } 
+                    window.updateFuseUI();
                 }, 100);
-            } else { fuseContainer?.classList.add('hidden'); }
+            } else { 
+                window._fuseRunning = false;
+                window._fuseRemaining = 0;
+                fuseContainer?.classList.add('hidden'); 
+            }
             
             var m = document.getElementById('zoom-modal');
             if (m) {
@@ -1280,6 +1313,9 @@
         window.handleAction = function(actionType) {
             if (!window.isProcessingModal) return; // Khoá an toàn
             clearInterval(window.bombInterval);
+            window.bombInterval = null;
+            window._fuseRunning = false;
+            window._fuseRemaining = 0;
             var m = document.getElementById('zoom-modal');
             if (m) {
                 m.classList.add('hidden'); m.classList.remove('flex');

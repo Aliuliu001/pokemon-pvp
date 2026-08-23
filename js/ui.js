@@ -396,7 +396,52 @@
         window.startTimer = window.startTotalTimer;
         window.stopGameGlobalTimer = function() { clearInterval(window.gameTimerInterval); window.isGameStarted = false; };
         
+        window.updateGlobalTimerUI = window.updateTimerUI;
+
         window.turnTimerInterval = null;
+        window._readTimerRemaining = 0;
+        window._readTimerTotal = 0;
+        window._readTimerRunning = false;
+
+        window.updateReadTimerUI = function() {
+            var container = document.getElementById('read-timer-container');
+            var bar = document.getElementById('read-timer-bar');
+            var text = document.getElementById('read-timer-text');
+            if (!container || !bar || !text) return;
+            
+            var timeLeft = Math.max(0, window._readTimerRemaining);
+            var totalSecs = window._readTimerTotal || 1;
+            text.innerText = 'FRONT TIME: ' + timeLeft + 's';
+            
+            var pct = Math.max(0, (timeLeft / totalSecs) * 100);
+            bar.style.width = pct + '%';
+            
+            if (pct <= 25) {
+                bar.classList.remove('from-green-400', 'to-emerald-500', 'from-yellow-400', 'to-amber-500');
+                bar.classList.add('from-red-500', 'to-rose-600');
+            } else if (pct <= 50) {
+                bar.classList.remove('from-green-400', 'to-emerald-500', 'from-red-500', 'to-rose-600');
+                bar.classList.add('from-yellow-400', 'to-amber-500');
+            } else {
+                bar.classList.remove('from-yellow-400', 'to-amber-500', 'from-red-500', 'to-rose-600');
+                bar.classList.add('from-green-400', 'to-emerald-500');
+            }
+        };
+
+        window.onReadTimerExpired = function() {
+            window.stopTurnTimer();
+            window.playSound('boom');
+            window.triggerMegaExplosion(window.currentTurn);
+            window.applyHPChange(window.currentTurn, -1, true, false);
+            var statusElNode = document.getElementById('global-status');
+            if (statusElNode) {
+                statusElNode.innerHTML = `<span class="bg-red-600/90 px-8 py-4 rounded-3xl border-4 border-red-300 text-white drop-shadow-[0_0_20px_rgba(220,38,38,1)]">HẾT GIỜ! BÙM!</span>`;
+                statusElNode.classList.remove('hidden');
+                setTimeout(() => statusElNode.classList.add('hidden'), 2500);
+            }
+            setTimeout(() => { if (!window.isGameOver) { if(window.processNextTurn) window.processNextTurn(); } }, 3000);
+        };
+
         window.startTurnTimer = function() {
             window.stopTurnTimer();
             if (!window.currentHand || window.currentHand.length === 0) return;
@@ -418,42 +463,27 @@
             bar.style.width = '100%';
             bar.className = 'absolute left-0 top-0 h-full w-full transition-all duration-1000 ease-linear bg-gradient-to-r from-green-400 to-emerald-500';
             
-            var timeLeft = totalSecs;
-            text.innerText = 'FRONT TIME: ' + timeLeft + 's';
+            window._readTimerTotal = totalSecs;
+            window._readTimerRemaining = totalSecs;
+            window._readTimerRunning = true;
+            window.updateReadTimerUI();
             
             window.turnTimerInterval = setInterval(() => {
-                timeLeft--;
-                text.innerText = 'FRONT TIME: ' + timeLeft + 's';
-                
-                var pct = Math.max(0, (timeLeft / totalSecs) * 100);
-                bar.style.width = pct + '%';
-                
-                if (pct <= 25) {
-                    bar.classList.remove('from-green-400', 'to-emerald-500', 'from-yellow-400', 'to-amber-500');
-                    bar.classList.add('from-red-500', 'to-rose-600');
-                } else if (pct <= 50) {
-                    bar.classList.remove('from-green-400', 'to-emerald-500');
-                    bar.classList.add('from-yellow-400', 'to-amber-500');
-                }
+                if (window.isGamePaused) return;
+                window._readTimerRemaining--;
+                window.updateReadTimerUI();
 
-                if (timeLeft <= 0) {
-                    window.stopTurnTimer();
-                    window.playSound('boom');
-                    window.triggerMegaExplosion(window.currentTurn);
-                    window.applyHPChange(window.currentTurn, -1, true, false);
-                    var statusElNode = document.getElementById('global-status');
-                    if(statusElNode) {
-                        statusElNode.innerHTML = `<span class="bg-red-600/90 px-8 py-4 rounded-3xl border-4 border-red-300 text-white drop-shadow-[0_0_20px_rgba(220,38,38,1)]">HẾT GIỜ! BÙM!</span>`;
-                        statusElNode.classList.remove('hidden');
-                        setTimeout(() => statusElNode.classList.add('hidden'), 2500);
-                    }
-                    setTimeout(() => { if (!window.isGameOver) { if(window.processNextTurn) window.processNextTurn(); } }, 3000);
+                if (window._readTimerRemaining <= 0) {
+                    window.onReadTimerExpired();
                 }
             }, 1000);
         };
         
         window.stopTurnTimer = function() {
             clearInterval(window.turnTimerInterval);
+            window.turnTimerInterval = null;
+            window._readTimerRunning = false;
+            window._readTimerRemaining = 0;
             var container = document.getElementById('read-timer-container');
             if(container) container.classList.add('hidden');
         };

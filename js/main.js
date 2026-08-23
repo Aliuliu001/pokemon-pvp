@@ -17,14 +17,113 @@
             localStorage.setItem('pokemonClashDataJSON', JSON.stringify(newData));
         };
         
-        window.autoSaveTableData = function() {
-            if (window._saveTimeout) clearTimeout(window._saveTimeout);
-            window._saveTimeout = setTimeout(() => {
-                window.saveTableData();
-            }, 500);
+        window.isGamePaused = false;
+        window._pausedTimers = { global: null, read: null, fuse: null };
+
+        window.pauseGame = function() {
+            if (window.isGameOver || window.isGamePaused) return;
+            window.isGamePaused = true;
+            
+            // Save and stop Global Timer
+            if (window.gameTimerInterval) {
+                clearInterval(window.gameTimerInterval);
+                window.gameTimerInterval = null;
+            }
+            
+            // Save and stop Read Timer (Front card)
+            if (window.turnTimerInterval) {
+                clearInterval(window.turnTimerInterval);
+                window.turnTimerInterval = null;
+            }
+            
+            // Save and stop Fuse Timer (Back card)
+            if (window.bombInterval) {
+                clearInterval(window.bombInterval);
+                window.bombInterval = null;
+            }
+            
+            // Show pause overlay
+            var overlay = document.getElementById('pause-overlay');
+            if (overlay) { 
+                overlay.classList.remove('hidden'); 
+                overlay.classList.add('flex'); 
+            }
+            
+            // Pause background music
+            if (window.bgMusic && !window.bgMusic.paused) {
+                window.bgMusic.pause();
+            }
+        };
+
+        window.resumeGame = function() {
+            if (!window.isGamePaused) return;
+            window.isGamePaused = false;
+            
+            // Resume Global Timer
+            if (window.GLOBAL_TIMER_ENABLED && window.isGameStarted && !window.isGameOver && window.currentGameTime > 0) {
+                clearInterval(window.gameTimerInterval);
+                window.gameTimerInterval = setInterval(function() {
+                    if (window.isGamePaused) return;
+                    window.currentGameTime--;
+                    window.updateTimerUI();
+                    if (window.currentGameTime <= 0) {
+                        clearInterval(window.gameTimerInterval);
+                        window.gameTimerInterval = null;
+                        window.triggerWin(true);
+                    }
+                }, 1000);
+            }
+            
+            // Resume Read Timer
+            if (window._readTimerRemaining > 0 && window._readTimerRunning && !window.isGameOver) {
+                clearInterval(window.turnTimerInterval);
+                window.turnTimerInterval = setInterval(function() {
+                    if (window.isGamePaused) return;
+                    window._readTimerRemaining--;
+                    window.updateReadTimerUI();
+                    if (window._readTimerRemaining <= 0) {
+                        if (window.onReadTimerExpired) window.onReadTimerExpired();
+                    }
+                }, 1000);
+            }
+            
+            // Resume Fuse Timer
+            if (window._fuseRemaining > 0 && window._fuseRunning && !window.isGameOver) {
+                clearInterval(window.bombInterval);
+                window.bombInterval = setInterval(function() {
+                    if (window.isGamePaused) return;
+                    window._fuseRemaining -= 0.1;
+                    if (window._fuseRemaining <= 0) {
+                        window._fuseRemaining = 0;
+                        clearInterval(window.bombInterval);
+                        window.bombInterval = null;
+                        window._fuseRunning = false;
+                        window.handleAction('miss');
+                        return;
+                    }
+                    window.updateFuseUI();
+                }, 100);
+            }
+            
+            // Hide pause overlay
+            var overlay = document.getElementById('pause-overlay');
+            if (overlay) { 
+                overlay.classList.add('hidden'); 
+                overlay.classList.remove('flex'); 
+            }
+            
+            // Resume background music
+            if (window.bgMusic && window.soundEnabled) {
+                window.bgMusic.play().catch(function(){});
+            }
         };
 
         window.initGame = function() {
+            if (window.isGamePaused) {
+                window.isGamePaused = false;
+                var overlay = document.getElementById('pause-overlay');
+                if (overlay) { overlay.classList.add('hidden'); overlay.classList.remove('flex'); }
+            }
             window.isGameOver = false; 
             window.isProcessingModal = false; 
             window.stopGameGlobalTimer(); 
@@ -575,6 +674,13 @@
                 } 
             });
 
+            attachBtn('btn-pause', 'click', function() {
+                if (window.isGamePaused) window.resumeGame();
+                else window.pauseGame();
+            });
+
+            attachBtn('btn-resume', 'click', window.resumeGame);
+
             attachBtn('btn-reset', 'click', window.initGame);
             
             // Gắn event In-game Actions
@@ -592,6 +698,14 @@
         window.initGame(); 
     
             document.addEventListener('keydown', (e) => {
+                if (e.key === 'p' || e.key === 'P') {
+                    if (window.isGameOver) return;
+                    if (window.isGamePaused) window.resumeGame();
+                    else window.pauseGame();
+                    return;
+                }
+
+                if (window.isGamePaused) return;
                 if (window.isGameOver || window.isProcessingModal) return;
                 
                 var zoomModal = document.getElementById('zoom-modal');
