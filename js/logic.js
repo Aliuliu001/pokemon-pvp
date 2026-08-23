@@ -110,6 +110,7 @@
                 `;
                 btn.onclick = () => {
                     window.teams[teamId].config = p;
+                    localStorage.setItem(`pokemonClashTeam${teamId === 'team1' ? '1' : '2'}`, JSON.stringify(p));
                     window.applyTheme(teamId);
                     window.updateTurnUI();
                     window.updateHPUI();

@@ -140,7 +140,16 @@ window.applyBackground = function() {
             mimic: { active: false, turnsLeft: 0, caster: null }
         };
 
+        var t1Config = window.POKEMON_TEAMS[0];
+        var t2Config = window.POKEMON_TEAMS[1];
+        try {
+            var stored1 = localStorage.getItem('pokemonClashTeam1');
+            if (stored1) t1Config = JSON.parse(stored1);
+            var stored2 = localStorage.getItem('pokemonClashTeam2');
+            if (stored2) t2Config = JSON.parse(stored2);
+        } catch(e) {}
+
         window.teams = {
-            team1: { hp: window.TEAM1_MAX_HP, maxHp: window.TEAM1_MAX_HP, config: window.POKEMON_TEAMS[0], shieldCount: 0, hasBlind: false, isFrozen: false, sleepTurns: 0, isPoisoned: false, sabotageBombs: 0, baseEl: null },
-            team2: { hp: window.TEAM2_MAX_HP, maxHp: window.TEAM2_MAX_HP, config: window.POKEMON_TEAMS[1], shieldCount: 0, hasBlind: false, isFrozen: false, sleepTurns: 0, isPoisoned: false, sabotageBombs: 0, baseEl: null }
+            team1: { hp: window.TEAM1_MAX_HP, maxHp: window.TEAM1_MAX_HP, config: t1Config, shieldCount: 0, hasBlind: false, isFrozen: false, sleepTurns: 0, isPoisoned: false, sabotageBombs: 0, baseEl: null },
+            team2: { hp: window.TEAM2_MAX_HP, maxHp: window.TEAM2_MAX_HP, config: t2Config, shieldCount: 0, hasBlind: false, isFrozen: false, sleepTurns: 0, isPoisoned: false, sabotageBombs: 0, baseEl: null }
         };
