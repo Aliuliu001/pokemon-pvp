@@ -1,3 +1,29 @@
+        window.saveTableData = function() {
+            var newData = [];
+            for(var i = 0; i < window.MAX_ROWS; i++) {
+                var fIdNode = document.querySelector(`input[data-row="${i}"][data-col="0"]`);
+                if (!fIdNode) break;
+                var fId = fIdNode.value.trim();
+                var fWord = document.querySelector(`input[data-row="${i}"][data-col="1"]`)?.value.trim() || '';
+                var bImgId = document.querySelector(`input[data-row="${i}"][data-col="2"]`)?.value.trim() || '';
+                var bText = document.querySelector(`input[data-row="${i}"][data-col="3"]`)?.value.trim() || '';
+                var fTime = document.querySelector(`input[data-row="${i}"][data-col="4"]`)?.value.trim() || '';
+                var bTime = document.querySelector(`input[data-row="${i}"][data-col="5"]`)?.value.trim() || '';
+
+                if (fId || fWord || bImgId || bText) {
+                    newData.push({ fId, fWord, bImgId, bText, fTime, bTime });
+                }
+            }
+            localStorage.setItem('pokemonClashDataJSON', JSON.stringify(newData));
+        };
+        
+        window.autoSaveTableData = function() {
+            if (window._saveTimeout) clearTimeout(window._saveTimeout);
+            window._saveTimeout = setTimeout(() => {
+                window.saveTableData();
+            }, 500);
+        };
+
         window.initGame = function() {
             window.isGameOver = false; 
             window.isProcessingModal = false; 
@@ -120,6 +146,7 @@
                             }
                         }
                     }
+                    window.autoSaveTableData();
                 });
             }
 
@@ -452,22 +479,7 @@
             });
 
             attachBtn('btn-save-settings', 'click', () => {
-                var newData = [];
-                for(var i = 0; i < window.MAX_ROWS; i++) {
-                    var fIdNode = document.querySelector(`input[data-row="${i}"][data-col="0"]`);
-                    if (!fIdNode) break;
-                    var fId = fIdNode.value.trim();
-                    var fWord = document.querySelector(`input[data-row="${i}"][data-col="1"]`)?.value.trim() || '';
-                    var bImgId = document.querySelector(`input[data-row="${i}"][data-col="2"]`)?.value.trim() || '';
-                    var bText = document.querySelector(`input[data-row="${i}"][data-col="3"]`)?.value.trim() || '';
-                    var fTime = document.querySelector(`input[data-row="${i}"][data-col="4"]`)?.value.trim() || '';
-                    var bTime = document.querySelector(`input[data-row="${i}"][data-col="5"]`)?.value.trim() || '';
-
-                    if (fId || fWord || bImgId || bText) {
-                        newData.push({ fId, fWord, bImgId, bText, fTime, bTime });
-                    }
-                }
-                localStorage.setItem('pokemonClashDataJSON', JSON.stringify(newData));
+                window.saveTableData();
                 window.DISPLAY_MODE.front = document.getElementById('setting-front-mode')?.value || 'both';
                 window.DISPLAY_MODE.back = document.getElementById('setting-back-mode')?.value || 'full';
                 localStorage.setItem('pokemonClashDisplayMode', JSON.stringify(window.DISPLAY_MODE));
