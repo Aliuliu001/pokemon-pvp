@@ -278,7 +278,10 @@
             attachBtn('btn-clear-table', 'click', function(e) {
                 var colToClear = document.getElementById('clear-column-select')?.value;
                 var inputs = colToClear === 'all' ? document.querySelectorAll('#data-grid-body input') : document.querySelectorAll(`#data-grid-body input[data-col="${colToClear}"]`);
-                inputs.forEach(input => input.value = '');
+                inputs.forEach(input => {
+                    input.value = '';
+                    input.dispatchEvent(new Event('input', { bubbles: true }));
+                });
                 var target = e.currentTarget;
                 var orig = target.innerText; 
                 target.innerText = 'Cleared ✓'; 
@@ -295,7 +298,11 @@
                 for (var num = start; (step === 1 ? num <= end : num >= end); num += step) {
                     if (rIdx >= window.MAX_ROWS) break;
                     var input = document.querySelector(`input[data-row="${rIdx}"][data-col="${col}"]`);
-                    if (input) input.value = num; rIdx++;
+                    if (input) {
+                        input.value = num;
+                        input.dispatchEvent(new Event('input', { bubbles: true }));
+                    }
+                    rIdx++;
                 }
                 var target = e.currentTarget;
                 var orig = target.innerText; 
@@ -421,10 +428,16 @@
                     return alert("Nhập số giây!");
                 }
                 for (var i = 0; i < window.MAX_ROWS; i++) {
-                    var rowHasData = Array.from({length:4}).some((_,c) => document.querySelector(`input[data-row="${i}"][data-col="${c}"]`)?.value.trim());
+                    var rowHasData = Array.from({length:4}).some((_,c) => {
+                        var inp = document.querySelector(`input[data-row="${i}"][data-col="${c}"]`);
+                        return inp && inp.value.trim();
+                    });
                     if (rowHasData) {
                         var input = document.querySelector(`input[data-row="${i}"][data-col="${col}"]`);
-                        if(input) input.value = time;
+                        if(input) {
+                            input.value = time;
+                            input.dispatchEvent(new Event('input', { bubbles: true }));
+                        }
                     }
                 }
                 var target = e.currentTarget;
@@ -435,7 +448,7 @@
                 setTimeout(() => {
                     target.options[0].innerText = orig;
                     target.classList.replace('bg-green-600', 'bg-amber-600');
-                }, 1000);
+                }, 1500);
             });
 
             attachBtn('btn-save-settings', 'click', () => {
