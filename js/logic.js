@@ -769,7 +769,7 @@
             if (!ignoreShield && targetTeam.hasBlind) {
                 window.showCoinFlip(function(isDodged) {
                     targetTeam.hasBlind = false;
-                    var blindIcon = document.getElementById(targetId + '-blind-icon');
+                    var blindIcon = document.getElementById(targetId + '-icon-blind');
                     if(blindIcon) blindIcon.classList.add('hidden');
                     
                     if (isDodged) {

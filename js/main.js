@@ -594,6 +594,24 @@
             document.addEventListener('keydown', (e) => {
                 if (window.isGameOver || window.isProcessingModal) return;
                 
+                var zoomModal = document.getElementById('zoom-modal');
+                var settingsModal = document.getElementById('settings-modal');
+                var specialModal = document.getElementById('special-cards-modal');
+                var avatarModal = document.getElementById('avatar-modal');
+                var coinModal = document.getElementById('coin-modal');
+                var wheelModal = document.getElementById('wheel-modal');
+                var metronomeModal = document.getElementById('metronome-modal');
+                var pauseOverlay = document.getElementById('pause-overlay');
+
+                if (zoomModal && !zoomModal.classList.contains('hidden')) return;
+                if (settingsModal && !settingsModal.classList.contains('hidden')) return;
+                if (specialModal && !specialModal.classList.contains('hidden')) return;
+                if (avatarModal && !avatarModal.classList.contains('hidden')) return;
+                if (coinModal && !coinModal.classList.contains('hidden')) return;
+                if (wheelModal && !wheelModal.classList.contains('hidden')) return;
+                if (metronomeModal && !metronomeModal.classList.contains('hidden')) return;
+                if (pauseOverlay && !pauseOverlay.classList.contains('hidden')) return;
+                
                 var keyMapCorrect = { '1':0, '2':1, '3':2, '4':3, '5':4, '6':5, '7':6 };
                 var keyMapIncorrect = { 'q':0, 'w':1, 'e':2, 'r':3, 't':4, 'y':5, 'u':6 };
                 var key = e.key.toLowerCase();
