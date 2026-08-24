@@ -285,6 +285,8 @@
             var existingBtn = document.getElementById('bonus-card-btn');
             if (existingBtn) existingBtn.remove();
             
+            if (!window.isSpecialModeActive) return;
+            
             if (window.bonusDrawn >= window.MAX_BONUS_CARDS || window.globalDeck.length === 0) return;
             
             var btn = document.createElement('button');
@@ -375,6 +377,7 @@
         };
 
         window.updateBonusButton = function() {
+            if (!window.isSpecialModeActive) return;
             var btn = document.getElementById('bonus-card-btn');
             if (!btn) return;
             
