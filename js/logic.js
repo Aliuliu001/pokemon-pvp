@@ -320,54 +320,55 @@
                 window.playSound('tick');
                 window.bonusDrawn++;
                 
-                if (window.globalDeck.length === 0) {
-                    window.buildDeck();
+                var isHardMode = window.isSpecialModeActive && window.SKILL_ON_MYSTIC_ONLY;
+                var card = null;
+
+                if (isHardMode) {
+                    card = { fId: '', fWord: 'MYSTIC BONUS', bImgId: '', bText: '⭐ MYSTIC SKILL ⭐', isSpecial: true, fTime: 0, bTime: 0 };
+                    var pool = [];
+                    window.dynamicSpecialCards.forEach(c => {
+                        for(var i=0; i<c.count; i++) pool.push(c);
+                    });
+                    if (pool.length > 0) {
+                        card.specialConfig = pool[Math.floor(Math.random() * pool.length)];
+                    } else {
+                        card.isSpecial = false;
+                    }
+                } else {
+                    if (window.globalDeck.length === 0) window.buildDeck();
+                    card = window.globalDeck.pop();
                 }
 
-                var card = window.globalDeck.pop();
                 if (card) {
-                    if (window.isSpecialModeActive && window.SKILL_ON_MYSTIC_ONLY) {
-                        card.isSpecial = true;
-                        var pool = [];
-                        window.dynamicSpecialCards.forEach(c => {
-                            for(var i=0; i<c.count; i++) pool.push(c);
-                        });
-                        if (pool.length > 0) {
-                            card.specialConfig = pool[Math.floor(Math.random() * pool.length)];
-                        } else {
-                            card.isSpecial = false;
-                        }
-                    }
                     var cardToPush = { ...card, used: false, uniqueId: Math.random().toString(36).substr(2, 9) };
                     window.currentHand.push(cardToPush);
                     var newIdx = window.currentHand.length - 1;
                     window.renderSingleCard(cardToPush, newIdx);
 
-                    // Mark as judged correct automatically
-                    window.judgedCards.set(newIdx, true);
-                    var rm = document.getElementById(`read-marker-${newIdx}`);
-                    if (rm) {
-                        rm.classList.replace('hidden', 'flex');
-                        rm.classList.remove('bg-red-500');
-                        rm.classList.add('bg-green-500');
-                        rm.innerHTML = '✅';
-                    }
-                    var cards = document.querySelectorAll('#active-hand .card');
-                    if (cards && cards[newIdx]) {
-                        var inner = cards[newIdx].querySelector('.card-inner');
-                        if (inner) {
-                            inner.classList.add('shadow-[0_0_15px_rgba(34,197,94,0.8)]');
+                    if (isHardMode) {
+                        // Auto-judge and auto-open for pure skill card
+                        window.judgedCards.set(newIdx, true);
+                        var rm = document.getElementById(`read-marker-${newIdx}`);
+                        if (rm) {
+                            rm.classList.replace('hidden', 'flex');
+                            rm.classList.remove('bg-red-500');
+                            rm.classList.add('bg-green-500');
+                            rm.innerHTML = '✅';
                         }
-                    }
+                        var cards = document.querySelectorAll('#active-hand .card');
+                        if (cards && cards[newIdx]) {
+                            var inner = cards[newIdx].querySelector('.card-inner');
+                            if (inner) inner.classList.add('shadow-[0_0_15px_rgba(34,197,94,0.8)]');
+                        }
 
-                    // Auto-open modal after card appear animation completes (~600ms)
-                    setTimeout(() => {
-                        if (!window.isGameOver && !window.isGamePaused && !window.isProcessingModal && window.currentHand && window.currentHand[newIdx]) {
-                            if (window.stopTurnTimer) window.stopTurnTimer();
-                            window.playSound('flip');
-                            window.openModal(cardToPush, newIdx);
-                        }
-                    }, 600);
+                        setTimeout(() => {
+                            if (!window.isGameOver && !window.isGamePaused && !window.isProcessingModal && window.currentHand && window.currentHand[newIdx]) {
+                                if (window.stopTurnTimer) window.stopTurnTimer();
+                                window.playSound('flip');
+                                window.openModal(cardToPush, newIdx);
+                            }
+                        }, 600);
+                    }
                 }
                 window.updateBonusButton();
             });
