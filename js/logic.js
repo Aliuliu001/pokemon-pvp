@@ -500,7 +500,7 @@
                     for (var val of window.judgedCards.values()) {
                         if (val === true) { allWrong = false; break; }
                     }
-                    if (allWrong && (window.bonusDrawn >= window.MAX_BONUS_CARDS || window.globalDeck.length === 0)) {
+                    if (allWrong) {
                         window.playSound('boom');
                         window.triggerMegaExplosion(window.currentTurn);
                         window.applyHPChange(window.currentTurn, -1, true, false);
