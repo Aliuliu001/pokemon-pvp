@@ -447,8 +447,8 @@
                 ${numberBadge}
                 ${starBadge}
                 ${readMarker}
-                <div class="absolute inset-0 backface-hidden rounded-xl card-cover flex flex-col justify-center items-center p-2 border-[4px] md:border-[6px] bg-slate-800 transition-all duration-300 ${extraClass}">
-                    <div class="w-[100%] h-[100%] bg-white rounded-lg shadow-inner flex flex-col items-center justify-center p-1 border-2 border-slate-200 relative overflow-hidden">
+                <div class="absolute inset-0 backface-hidden rounded-xl card-cover flex flex-col justify-center items-center p-1 border-[2px] md:border-[4px] bg-slate-800 transition-all duration-300 ${extraClass}">
+                    <div class="w-[100%] h-[100%] bg-white rounded-lg shadow-inner flex flex-col items-center justify-center relative overflow-hidden">
                         ${content}
                     </div>
                 </div>

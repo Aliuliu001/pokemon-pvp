@@ -191,3 +191,7 @@
         }
     
 .animate-shake { animation: shake 0.4s cubic-bezier(.36,.07,.19,.97) both; }
+#team1-base img, #team2-base img { transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1); }
+#team1-base:not(.active-turn) img, #team2-base:not(.active-turn) img { filter: grayscale(50%) brightness(0.7) drop-shadow(0 5px 5px rgba(0,0,0,0.5)) !important; transform: scale(0.85); }
+#team1-base.active-turn img, #team2-base.active-turn img { transform: scale(1.15) translateY(-10px); filter: drop-shadow(0 15px 25px rgba(255,255,255,0.7)) drop-shadow(0 0 10px rgba(var(--t-rgb), 0.8)) !important; }
+

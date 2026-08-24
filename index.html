@@ -10,7 +10,7 @@
 <body class="p-1 md:p-2 pb-6 flex flex-col items-center relative min-h-screen overflow-x-hidden">
 
 <div class="w-full flex flex-col items-center justify-start z-10 pointer-events-none mt-4 shrink-0 drop-shadow-xl">
-        <h1 id="main-title" class="text-4xl md:text-6xl font-black tarot-font text-white tracking-widest text-center" style="text-shadow: 2px 2px 0 #000, -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 2px 4px 5px rgba(0,0,0,0.8);">POKEMON CASTLE BATTLE</h1>
+        <h1 id="main-title" class="hidden text-4xl md:text-6xl font-black tarot-font text-white tracking-widest text-center" style="text-shadow: 2px 2px 0 #000, -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 2px 4px 5px rgba(0,0,0,0.8);">POKEMON CASTLE BATTLE</h1>
         <p id="global-status" class="hidden text-xl md:text-4xl text-slate-100 font-black animate-pulse mt-2 pointer-events-auto drop-shadow-md z-50"></p>
     </div>
 
@@ -66,7 +66,7 @@
                     </svg>
                     <span id="game-timer-text" class="relative z-10 text-xl md:text-3xl font-black text-white tarot-font tracking-wider">00:00</span>
                 </div>
-                <div class="relative flex items-center justify-center w-full mt-2">
+                <div class="relative flex items-center justify-center w-full mt-2 mb-2">
                     <div id="pb-turn-team1" class="absolute right-[70%] md:right-[110%] opacity-0 transform scale-50 transition-all duration-500 z-50">
                         <img src="https://upload.wikimedia.org/wikipedia/commons/5/53/Pok%C3%A9_Ball_icon.svg" class="w-12 h-12 md:w-16 md:h-16 pokeball-img" alt="Turn">
                     </div>
@@ -74,6 +74,10 @@
                     <div id="pb-turn-team2" class="absolute left-[70%] md:left-[110%] opacity-0 transform scale-50 transition-all duration-500 z-50">
                         <img src="https://upload.wikimedia.org/wikipedia/commons/5/53/Pok%C3%A9_Ball_icon.svg" class="w-12 h-12 md:w-16 md:h-16 pokeball-img" alt="Turn">
                     </div>
+                </div>
+                <div id="read-timer-container" class="w-full max-w-sm h-5 md:h-6 bg-slate-800/80 rounded-full border-2 border-slate-600 hidden relative overflow-hidden shadow-[inset_0_2px_4px_rgba(0,0,0,0.6)]">
+                    <div id="read-timer-bar" class="absolute left-0 top-0 h-full bg-gradient-to-r from-green-400 to-emerald-500 w-full transition-all duration-1000 ease-linear"></div>
+                    <div id="read-timer-text" class="absolute inset-0 flex items-center justify-center text-xs md:text-sm font-bold text-white drop-shadow-[0_1px_2px_rgba(0,0,0,0.8)] z-10 tracking-wider"></div>
                 </div>
             </div>
 
@@ -110,12 +114,8 @@
 
         <!-- CARDS -->
         <div class="w-full flex flex-col items-center mt-4 md:mt-0 mb-4 md:mb-10 z-20 transition-all duration-300" id="hand-panel">
-            <h2 id="turn-indicator" class="text-3xl md:text-5xl font-black tarot-font text-white mb-2 transition-all duration-300 text-center tracking-widest uppercase" style="text-shadow: 2px 2px 0 #000, -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 0 0 20px currentColor;">TEAM 1'S TURN</h2>
-            <div id="read-timer-container" class="w-[80%] max-w-md h-5 md:h-6 bg-slate-800/80 rounded-full border-2 border-slate-600 mb-4 md:mb-6 hidden relative overflow-hidden shadow-[inset_0_2px_4px_rgba(0,0,0,0.6)]">
-                <div id="read-timer-bar" class="absolute left-0 top-0 h-full bg-gradient-to-r from-green-400 to-emerald-500 w-full transition-all duration-1000 ease-linear"></div>
-                <div id="read-timer-text" class="absolute inset-0 flex items-center justify-center text-xs md:text-sm font-bold text-white drop-shadow-[0_1px_2px_rgba(0,0,0,0.8)] z-10 tracking-wider"></div>
-            </div>
-            <div id="active-hand" class="flex flex-row justify-center gap-2 sm:gap-4 md:gap-8 w-full max-w-5xl h-[20vh] sm:h-[25vh] md:h-[30vh] max-h-[260px]"></div>
+            <h2 id="turn-indicator" class="hidden text-3xl md:text-5xl font-black tarot-font text-white mb-2 transition-all duration-300 text-center tracking-widest uppercase" style="text-shadow: 2px 2px 0 #000, -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 0 0 20px currentColor;">TEAM 1'S TURN</h2>
+            <div id="active-hand" class="flex flex-row justify-center gap-2 sm:gap-4 md:gap-8 w-full max-w-7xl h-[30vh] sm:h-[40vh] md:h-[50vh] max-h-[420px]"></div>
         </div>
 
     </div>
