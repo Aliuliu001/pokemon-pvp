@@ -621,8 +621,14 @@
             
             if (!bImgId && !bText) {
                 var pColor = team.config.rgb;
+                var pId = team.config.id;
+                var pokeUrl = `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/${pId}.png`;
+                
                 innerHTMLStr = `
                 <div class="w-full h-full rounded-2xl flex flex-col items-center justify-center relative overflow-hidden galaxy-bg border border-indigo-500/50">
+                    <div class="absolute inset-[-20%] pointer-events-none z-0" style="color: rgba(${pColor}, 1);">
+                        <div class="w-full h-full bg-drifting-pokemon" style="background-image: url('${pokeUrl}');"></div>
+                    </div>
                     <div class="relative z-10 w-48 h-48 md:w-64 md:h-64 bg-white/90 backdrop-blur-sm rounded-full border-[10px] md:border-[16px] shadow-[0_0_50px_rgba(${pColor},0.6)] flex items-center justify-center overflow-hidden transition-all duration-500 hover:scale-105 hover:shadow-[0_0_80px_rgba(${pColor},0.9)]" style="border-color: rgba(${pColor}, 0.8);">
                         <img src="assets/joy_logo.png" class="w-[95%] h-[95%] object-contain drop-shadow-lg">
                     </div>
