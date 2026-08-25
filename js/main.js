@@ -295,7 +295,7 @@
                                 var img = new Image();
                                 img.onload = function() {
                                     var canvas = document.createElement('canvas');
-                                    var maxDim = 800;
+                                    var maxDim = 1500;
                                     var width = img.width;
                                     var height = img.height;
                                     
@@ -310,7 +310,7 @@
                                     var ctx = canvas.getContext('2d');
                                     ctx.drawImage(img, 0, 0, width, height);
                                     
-                                    var base64Str = canvas.toDataURL('image/webp', 0.85);
+                                    var base64Str = canvas.toDataURL('image/webp', 0.95);
                                     
                                     var fileNameNoExt = file.name.substring(0, file.name.lastIndexOf('.')) || file.name;
                                     window.imagesPool[fileNameNoExt] = base64Str;
