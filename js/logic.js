@@ -292,11 +292,12 @@
             
             var frozenHtml = '';
             if (window.isSpecialModeActive && window.SKILL_ON_MYSTIC_ONLY) {
-                frozenHtml = `<div id="mystic-frozen-overlay" class="absolute inset-0 bg-black/50 z-20 rounded-xl md:rounded-2xl transition-all duration-700 pointer-events-none flex flex-col items-center justify-center overflow-hidden">
-                    <span class="text-4xl md:text-5xl drop-shadow-[0_0_10px_rgba(255,255,255,1)] z-30">🔒</span>
+                frozenHtml = `<div id="mystic-frozen-overlay" class="absolute inset-0 bg-blue-500/30 z-20 rounded-xl md:rounded-2xl transition-all duration-700 pointer-events-none flex flex-col items-center justify-center overflow-hidden border-2 border-white/40 shadow-[inset_0_0_20px_rgba(255,255,255,0.8)]">
+                    <div class="absolute -inset-[100%] bg-[url('https://www.transparenttextures.com/patterns/ice-pattern.png')] opacity-70 animate-snow-fall"></div>
+                    <span class="text-4xl md:text-5xl drop-shadow-[0_0_10px_rgba(255,255,255,1)] z-30">🧊</span>
                 </div>`;
             } else {
-                btn.classList.add('animate-pulse');
+                btn.classList.add('animate-mystic-glow');
             }
 
             btn.innerHTML = `
@@ -393,11 +394,11 @@
                     }
                     if (correct === total && total > 0) {
                         btn.style.pointerEvents = 'auto';
-                        btn.classList.add('animate-pulse');
+                        btn.classList.add('animate-mystic-glow');
                         if (overlay) overlay.style.display = 'none';
                     } else {
                         btn.style.pointerEvents = 'none';
-                        btn.classList.remove('animate-pulse');
+                        btn.classList.remove('animate-mystic-glow');
                         if (overlay) overlay.style.display = 'flex';
                     }
                 } else {

@@ -214,3 +214,18 @@
 .card-appear {
     animation: cardAppear 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
 }
+@keyframes snowFallAnim {
+    0% { transform: translateY(-25%) rotate(0deg); }
+    100% { transform: translateY(25%) rotate(5deg); }
+}
+.animate-snow-fall {
+    animation: snowFallAnim 15s linear infinite;
+    background-size: 200px 200px;
+}
+@keyframes mysticGlow {
+    0%, 100% { box-shadow: 0 0 30px rgba(139,92,246,0.6); border-color: rgba(129, 140, 248, 0.5); }
+    50% { box-shadow: 0 0 60px rgba(139,92,246,1), 0 0 100px rgba(139,92,246,0.8); border-color: rgba(196, 181, 253, 1); }
+}
+.animate-mystic-glow {
+    animation: mysticGlow 1.5s ease-in-out infinite;
+}
