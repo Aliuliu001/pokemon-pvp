@@ -162,7 +162,7 @@
                 
                 return `
                 <div class="relative w-full h-full flex items-center justify-center">
-                    <img src="${imgSrc}" class="max-w-full max-h-full object-contain z-10 ${opacity}" alt="img" 
+                    <img src="${imgSrc}" class="w-full h-full object-contain z-10 ${opacity}" alt="img" 
                          onerror="${onErrorStr}">
                     <div class="hidden flex-col items-center justify-center w-full h-full absolute inset-0 text-slate-400 bg-slate-50 rounded z-0"><span class="text-xs font-bold text-center">Missing<br>${id}</span></div>
                 </div>
