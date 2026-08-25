@@ -317,17 +317,32 @@
                                     window.imagesPool[fileNameNoExt] = base64Str;
                                     
                                     processedCount++;
-                                    if (processedCount === files.length) {
-                                        window.saveImagesToIndexedDB(window.imagesPool).then(() => {
-                                            if(status) { status.innerText = 'Saved ' + files.length + ' images to memory!'; setTimeout(() => status.classList.add('hidden'), 3000); }
-                                            window.buildDeck();
-                                        }).catch(() => {
-                                            if(status) { status.innerText = 'Error: Failed to save images!'; status.classList.replace('text-yellow-400', 'text-red-400'); }
-                                        });
-                                    }
+                                    checkDone();
+                                };
+                                img.onerror = function() {
+                                    console.error('Failed to load image:', file.name);
+                                    processedCount++;
+                                    checkDone();
                                 };
                                 img.src = event.target.result;
                             };
+                            reader.onerror = function() {
+                                console.error('Failed to read file:', file.name);
+                                processedCount++;
+                                checkDone();
+                            };
+                            
+                            function checkDone() {
+                                if (processedCount === files.length) {
+                                    window.saveImagesToIndexedDB(window.imagesPool).then(() => {
+                                        if(status) { status.innerText = 'Saved ' + files.length + ' images to memory!'; setTimeout(() => status.classList.add('hidden'), 3000); }
+                                        window.buildDeck();
+                                    }).catch(() => {
+                                        if(status) { status.innerText = 'Error: Failed to save images!'; status.classList.replace('text-yellow-400', 'text-red-400'); }
+                                    });
+                                }
+                            }
+                            
                             reader.readAsDataURL(file);
                         })(files[i]);
                     }
