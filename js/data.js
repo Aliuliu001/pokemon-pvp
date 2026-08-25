@@ -1,8 +1,48 @@
 window.imagesPool = {};
+
+// IndexedDB Helper
+window.loadImagesFromIndexedDB = function() {
+    return new Promise((resolve) => {
+        const req = indexedDB.open('PokemonClashDB', 1);
+        req.onupgradeneeded = (e) => {
+            const db = e.target.result;
+            if (!db.objectStoreNames.contains('images')) db.createObjectStore('images');
+        };
+        req.onsuccess = (e) => {
+            const db = e.target.result;
+            if (!db.objectStoreNames.contains('images')) { resolve({}); return; }
+            const tx = db.transaction('images', 'readonly');
+            const getReq = tx.objectStore('images').get('imagePool');
+            getReq.onsuccess = () => resolve(getReq.result || {});
+            getReq.onerror = () => resolve({});
+        };
+        req.onerror = () => resolve({});
+    });
+};
+
+window.saveImagesToIndexedDB = function(pool) {
+    return new Promise((resolve) => {
+        const req = indexedDB.open('PokemonClashDB', 1);
+        req.onsuccess = (e) => {
+            const db = e.target.result;
+            const tx = db.transaction('images', 'readwrite');
+            tx.objectStore('images').put(pool, 'imagePool');
+            tx.oncomplete = () => resolve();
+        };
+    });
+};
+
+// Legacy fallback
 try {
     var storedPool = localStorage.getItem('pokemonClashImagePool');
-    if (storedPool) window.imagesPool = JSON.parse(storedPool);
-} catch(e) { console.warn("Failed to parse imagesPool", e); }
+    if (storedPool) {
+        window.imagesPool = JSON.parse(storedPool);
+        // Auto-migrate to IDB
+        window.saveImagesToIndexedDB(window.imagesPool).then(() => {
+            localStorage.removeItem('pokemonClashImagePool');
+        });
+    }
+} catch(e) { console.warn("Failed to parse legacy imagesPool", e); }
 
 window.applyBackground = function() {
             var savedBg = localStorage.getItem("pokemonClashBgImage");

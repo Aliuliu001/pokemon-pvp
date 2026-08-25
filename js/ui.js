@@ -83,7 +83,7 @@
                 }
                 if (window.INJECTED_GAME_STATE.imagesPool) {
                     window.imagesPool = window.INJECTED_GAME_STATE.imagesPool;
-                    localStorage.setItem('pokemonClashImagePool', JSON.stringify(window.imagesPool));
+                    if (window.saveImagesToIndexedDB) window.saveImagesToIndexedDB(window.imagesPool);
                 }
                 
                 localStorage.setItem('pokemonClashDataJSON', JSON.stringify(parsedData));

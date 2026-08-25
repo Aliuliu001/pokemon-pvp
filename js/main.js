@@ -267,6 +267,7 @@
                 clearImgBtn.addEventListener('click', function(e) {
                     if (confirm("Are you sure you want to delete all uploaded images?")) {
                         window.imagesPool = {};
+                        window.saveImagesToIndexedDB({});
                         localStorage.removeItem('pokemonClashImagePool');
                         var target = e.currentTarget;
                         var orig = target.innerText;
@@ -317,13 +318,12 @@
                                     
                                     processedCount++;
                                     if (processedCount === files.length) {
-                                        try {
-                                            localStorage.setItem('pokemonClashImagePool', JSON.stringify(window.imagesPool));
+                                        window.saveImagesToIndexedDB(window.imagesPool).then(() => {
                                             if(status) { status.innerText = 'Saved ' + files.length + ' images to memory!'; setTimeout(() => status.classList.add('hidden'), 3000); }
                                             window.buildDeck();
-                                        } catch(e) {
-                                            if(status) { status.innerText = 'Error: Storage full! (Max 5MB)'; status.classList.replace('text-yellow-400', 'text-red-400'); }
-                                        }
+                                        }).catch(() => {
+                                            if(status) { status.innerText = 'Error: Failed to save images!'; status.classList.replace('text-yellow-400', 'text-red-400'); }
+                                        });
                                     }
                                 };
                                 img.src = event.target.result;
@@ -695,7 +695,15 @@
 
         // Khởi động
         window.setupGameEvents();
-        window.initGame(); 
+        
+        if (window.loadImagesFromIndexedDB) {
+            window.loadImagesFromIndexedDB().then(pool => {
+                if (Object.keys(pool).length > 0) window.imagesPool = pool;
+                window.initGame();
+            });
+        } else {
+            window.initGame(); 
+        }
     
             document.addEventListener('keydown', (e) => {
                 if (e.key === 'p' || e.key === 'P') {
