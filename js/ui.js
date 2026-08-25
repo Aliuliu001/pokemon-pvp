@@ -161,7 +161,7 @@
                     : `if(this.src.endsWith('.png')){this.src='./${folder}/${id}.jpg';}else if(this.src.endsWith('.jpg')){this.src='./${folder}/${id}.jpeg';}else{this.onerror=null; this.style.display='none'; this.nextElementSibling.style.display='flex';}`;
                 
                 return `
-                <div class="relative w-full h-full flex items-center justify-center p-0.5">
+                <div class="relative w-full h-full flex items-center justify-center">
                     <img src="${imgSrc}" class="max-w-full max-h-full object-contain z-10 ${opacity}" alt="img" 
                          onerror="${onErrorStr}">
                     <div class="hidden flex-col items-center justify-center w-full h-full absolute inset-0 text-slate-400 bg-slate-50 rounded z-0"><span class="text-xs font-bold text-center">Missing<br>${id}</span></div>
