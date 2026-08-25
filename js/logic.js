@@ -626,9 +626,13 @@
                 
                 innerHTMLStr = `
                 <div class="w-full h-full rounded-2xl flex flex-col items-center justify-center relative overflow-hidden galaxy-bg border border-indigo-500/50">
-                    <div class="absolute inset-[-10%] pointer-events-none z-0 opacity-50" style="color: rgba(${pColor}, 1);">
-                        <div class="w-full h-full bg-drifting-pokemon" style="background-image: url('${pokeUrl}'), url('${pokeUrl}'), url('${pokeUrl}'), url('${pokeUrl}'), url('${pokeUrl}');"></div>
-                    </div>
+                    <!-- Left Pokemon -->
+                    <img src="${pokeUrl}" class="absolute left-[-5%] md:left-[2%] top-1/2 h-[80%] max-w-[40%] object-contain drop-shadow-[0_0_20px_rgba(${pColor},0.8)] z-0 transition-transform duration-500 hover:scale-110 pointer-events-none" style="transform: translateY(-50%);">
+                    
+                    <!-- Right Pokemon (Flipped) -->
+                    <img src="${pokeUrl}" class="absolute right-[-5%] md:right-[2%] top-1/2 h-[80%] max-w-[40%] object-contain drop-shadow-[0_0_20px_rgba(${pColor},0.8)] z-0 transition-transform duration-500 hover:scale-110 pointer-events-none" style="transform: translateY(-50%) scaleX(-1);">
+                    
+                    <!-- Central Logo -->
                     <div class="relative z-10 w-48 h-48 md:w-64 md:h-64 bg-white/90 backdrop-blur-sm rounded-full border-[10px] md:border-[16px] shadow-[0_0_50px_rgba(${pColor},0.6)] flex items-center justify-center overflow-hidden transition-all duration-500 hover:scale-105 hover:shadow-[0_0_80px_rgba(${pColor},0.9)]" style="border-color: rgba(${pColor}, 0.8);">
                         <img src="assets/joy_logo.png" class="w-[95%] h-[95%] object-contain drop-shadow-lg">
                     </div>
