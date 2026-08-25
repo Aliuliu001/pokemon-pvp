@@ -121,7 +121,7 @@
     </div>
 
     <!-- UI TOOLS -->
-    <div class="absolute bottom-2 left-2 md:bottom-4 md:left-4 flex flex-row items-end gap-2 z-40 bg-slate-800/90 p-1.5 md:p-2 rounded-xl backdrop-blur-md border border-slate-500 shadow-xl">
+    <div class="absolute top-2 left-2 md:top-4 md:left-4 grid grid-cols-2 gap-2 z-40 bg-slate-800/90 p-1.5 md:p-2 rounded-xl backdrop-blur-md border border-slate-500 shadow-xl w-fit justify-items-center">
         <button id="btn-settings" class="w-8 h-8 md:w-10 md:h-10 bg-slate-800 hover:bg-slate-700 text-white rounded-full text-sm md:text-base transition-all duration-300 border border-slate-500 flex items-center justify-center shadow-lg hover:scale-105" title="Settings">⚙️</button>
         <div class="relative group">
             <button id="btn-special-mode" class="relative w-8 h-8 md:w-10 md:h-10 rounded-full transition-all duration-300 border border-slate-800 flex items-center justify-center shadow-lg bg-white overflow-hidden hover:scale-105 active:scale-95" title="Special Cards">
@@ -357,8 +357,8 @@
     <div id="zoom-modal" class="fixed inset-0 bg-black/90 z-50 hidden flex-col items-center justify-center p-4 backdrop-blur-md">
         <h2 id="modal-team-title" class="text-2xl md:text-5xl font-black text-white mb-4 tarot-font drop-shadow-[0_4px_10px_rgba(0,0,0,1)] tracking-widest transition-colors duration-300" style="text-shadow: 2px 2px 0 #000, -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000;"></h2>
         
-        <div class="w-[90%] max-w-4xl relative modal-card mb-4">
-            <div id="modal-card-content" class="w-full aspect-[4/3] sm:aspect-video bg-fdf6e3 rounded-3xl border-8 flex flex-col p-4 shadow-[0_0_50px_rgba(0,0,0,0.8)] relative bg-white transition-colors duration-300 mx-auto">
+        <div class="w-[95%] max-w-3xl md:max-w-4xl relative modal-card mb-2 md:mb-4">
+            <div id="modal-card-content" class="w-full h-[45vh] md:h-[50vh] max-h-[400px] bg-fdf6e3 rounded-3xl border-8 flex flex-col p-4 shadow-[0_0_50px_rgba(0,0,0,0.8)] relative bg-white transition-colors duration-300 mx-auto">
                 <div id="fuse-container" class="hidden absolute -top-4 left-1/2 transform -translate-x-1/2 w-2/3 max-w-[300px] h-6 md:h-8 bg-slate-900 rounded-full border-4 border-slate-600 shadow-xl overflow-hidden z-40">
                     <div id="fuse-bar" class="h-full bg-green-500 w-full transition-all duration-100 ease-linear ml-auto"></div>
                     <div class="absolute inset-0 flex justify-center items-center text-xs md:text-base font-black text-white drop-shadow-md z-10" id="fuse-text">0.0s</div>
