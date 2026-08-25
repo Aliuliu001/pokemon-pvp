@@ -288,7 +288,7 @@
             
             var btn = document.createElement('button');
             btn.id = 'bonus-card-btn';
-            btn.className = "galaxy-bg relative h-full aspect-[4/3] rounded-xl md:rounded-2xl flex flex-col items-center justify-center text-white shadow-[0_0_30px_rgba(139,92,246,0.6)] border-4 border-indigo-400/50 hover:scale-105 transition-transform shrink-0 cursor-pointer ml-2 md:ml-4 group";
+            btn.className = "galaxy-bg relative h-full aspect-[4/3] rounded-xl md:rounded-2xl flex flex-col items-center justify-center text-white shadow-[0_0_30px_rgba(139,92,246,0.6)] border-4 border-indigo-400/50 hover:scale-105 transition-transform shrink-0 cursor-pointer ml-2 md:ml-4 group card-appear";
             
             var frozenHtml = '';
             if (window.isSpecialModeActive && window.SKILL_ON_MYSTIC_ONLY) {
@@ -297,7 +297,7 @@
                     <span class="text-4xl md:text-5xl drop-shadow-[0_0_10px_rgba(255,255,255,1)] z-30">🧊</span>
                 </div>`;
             } else {
-                btn.classList.add('animate-bounce');
+                btn.classList.add('animate-pulse');
             }
 
             btn.innerHTML = `
@@ -369,7 +369,7 @@
             });
             
             handPanel.appendChild(btn);
-            setTimeout(() => btn.classList.remove('animate-bounce'), 1000);
+            setTimeout(() => btn.classList.remove('animate-pulse'), 400);
             window.updateBonusButton();
         };
 
@@ -394,11 +394,11 @@
                     }
                     if (correct === total && total > 0) {
                         btn.style.pointerEvents = 'auto';
-                        btn.classList.add('animate-bounce');
+                        btn.classList.add('animate-pulse');
                         if (overlay) overlay.style.display = 'none';
                     } else {
                         btn.style.pointerEvents = 'none';
-                        btn.classList.remove('animate-bounce');
+                        btn.classList.remove('animate-pulse');
                         if (overlay) overlay.style.display = 'flex';
                     }
                 } else {
@@ -422,7 +422,7 @@
             
             var existingBtn = document.getElementById('bonus-card-btn');
             
-            var card = document.createElement('div'); card.className = 'card h-full aspect-[4/3] perspective cursor-pointer animate-bounce';
+            var card = document.createElement('div'); card.className = 'card h-full aspect-[4/3] perspective cursor-pointer card-appear';
             var inner = document.createElement('div'); inner.className = 'card-inner w-full h-full relative transform-style-3d shadow-xl transition-transform duration-500';
             
             var extraClass = cardObj.isSpecial ? 'special-aura' : '';
@@ -460,7 +460,7 @@
                 handPanel.appendChild(card);
             }
             
-            setTimeout(() => card.classList.remove('animate-bounce'), 1000);
+            setTimeout(() => card.classList.remove('card-appear'), 400);
             
             const markCard = (isCorrect) => {
                 if (window.isGameOver || window.isGamePaused) return;
