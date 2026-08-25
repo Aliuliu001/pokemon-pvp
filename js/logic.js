@@ -76,13 +76,10 @@
             document.getElementById('team1-base')?.style.setProperty('--t-rgb', window.teams.team1.config.rgb);
             document.getElementById('team2-base')?.style.setProperty('--t-rgb', window.teams.team2.config.rgb);
             
-            document.getElementById('pb-turn-team1')?.classList.replace('opacity-100', 'opacity-0');
-            document.getElementById('pb-turn-team1')?.classList.replace('scale-100', 'scale-50');
-            document.getElementById('pb-turn-team2')?.classList.replace('opacity-100', 'opacity-0');
-            document.getElementById('pb-turn-team2')?.classList.replace('scale-100', 'scale-50');
+            document.getElementById('pb-turn-team1')?.classList.add('opacity-0', 'scale-50');
+            document.getElementById('pb-turn-team2')?.classList.add('opacity-0', 'scale-50');
 
-            document.getElementById(`pb-turn-${window.currentTurn}`)?.classList.replace('opacity-0', 'opacity-100');
-            document.getElementById(`pb-turn-${window.currentTurn}`)?.classList.replace('scale-50', 'scale-100');
+            document.getElementById(`pb-turn-${window.currentTurn}`)?.classList.remove('opacity-0', 'scale-50');
         };
 
         window.populateSelects = function() {
@@ -507,7 +504,7 @@
                         
                         var statusElNode = document.getElementById('global-status');
                         if(statusElNode) {
-                            statusElNode.innerHTML = `<span class="bg-red-600/90 px-8 py-4 rounded-3xl border-4 border-red-300 text-white drop-shadow-[0_0_20px_rgba(220,38,38,1)]">TẤT CẢ ĐỀU SAI! BÙM!</span>`;
+                            statusElNode.innerHTML = `<span class="bg-red-600/90 px-8 py-4 rounded-3xl border-4 border-red-300 text-white drop-shadow-[0_0_20px_rgba(220,38,38,1)]">ALL WRONG! BOOM!</span>`;
                             statusElNode.classList.remove('hidden');
                             setTimeout(() => statusElNode.classList.add('hidden'), 2500);
                         }

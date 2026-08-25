@@ -435,7 +435,7 @@
             window.applyHPChange(window.currentTurn, -1, true, false);
             var statusElNode = document.getElementById('global-status');
             if (statusElNode) {
-                statusElNode.innerHTML = `<span class="bg-red-600/90 px-8 py-4 rounded-3xl border-4 border-red-300 text-white drop-shadow-[0_0_20px_rgba(220,38,38,1)]">HẾT GIỜ! BÙM!</span>`;
+                statusElNode.innerHTML = `<span class="bg-red-600/90 px-8 py-4 rounded-3xl border-4 border-red-300 text-white drop-shadow-[0_0_20px_rgba(220,38,38,1)]">TIME UP! BOOM!</span>`;
                 statusElNode.classList.remove('hidden');
                 setTimeout(() => statusElNode.classList.add('hidden'), 2500);
             }
