@@ -616,6 +616,21 @@
                 `;
             }
 
+            var bImgId = cardObj.bImgId ? cardObj.bImgId.toString().trim() : '';
+            var bText = cardObj.bText ? cardObj.bText.toString().trim() : '';
+            
+            if (!bImgId && !bText) {
+                var pColor = team.config.rgb;
+                innerHTMLStr = `
+                <div class="w-full h-full rounded-2xl flex flex-col items-center justify-center relative overflow-hidden bg-slate-50 border border-slate-300">
+                    <div class="absolute inset-[-50%] opacity-[0.07]" style="background-image: url('https://upload.wikimedia.org/wikipedia/commons/5/53/Pok%C3%A9_Ball_icon.svg'); background-size: 60px 60px; background-repeat: repeat; transform: rotate(-15deg);"></div>
+                    <div class="absolute inset-0 bg-gradient-to-br from-transparent to-black/5 pointer-events-none"></div>
+                    <div class="relative z-10 w-48 h-48 md:w-64 md:h-64 bg-white rounded-full border-[10px] md:border-[16px] shadow-[0_20px_50px_rgba(0,0,0,0.3)] flex items-center justify-center overflow-hidden transition-all duration-500 hover:scale-105" style="border-color: rgba(${pColor}, 0.5);">
+                        <img src="assets/joy_logo.png" class="w-[90%] h-[90%] object-contain drop-shadow-md">
+                    </div>
+                </div>`;
+            }
+
             if (cardObj.isSpecial) {
                 var spec = cardObj.specialConfig;
                 var btnClass = spec.type === 'nerf' 
