@@ -292,9 +292,8 @@
             
             var frozenHtml = '';
             if (window.isSpecialModeActive && window.SKILL_ON_MYSTIC_ONLY) {
-                frozenHtml = `<div id="mystic-frozen-overlay" class="absolute inset-0 bg-blue-400/50 backdrop-blur-[3px] z-20 rounded-xl md:rounded-2xl transition-all duration-700 pointer-events-none flex flex-col items-center justify-center border-2 border-white/40 shadow-[inset_0_0_20px_rgba(255,255,255,0.8)] overflow-hidden">
-                    <div class="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/ice-pattern.png')] opacity-70"></div>
-                    <span class="text-4xl md:text-5xl drop-shadow-[0_0_10px_rgba(255,255,255,1)] z-30">🧊</span>
+                frozenHtml = `<div id="mystic-frozen-overlay" class="absolute inset-0 bg-black/50 z-20 rounded-xl md:rounded-2xl transition-all duration-700 pointer-events-none flex flex-col items-center justify-center overflow-hidden">
+                    <span class="text-4xl md:text-5xl drop-shadow-[0_0_10px_rgba(255,255,255,1)] z-30">🔒</span>
                 </div>`;
             } else {
                 btn.classList.add('animate-pulse');
@@ -322,7 +321,7 @@
                 var card = { fId: '', fWord: 'MYSTIC BONUS', bImgId: '', bText: '⭐ MYSTIC BONUS ⭐', isSpecial: false, fTime: 0, bTime: 0 };
                 
                 if (window.isSpecialModeActive) {
-                    card.isSpecial = true;
+                    card.isSpecial = true; card.isPureBonus = true;
                     card.bText = '⭐ MYSTIC SKILL ⭐';
                     var pool = [];
                     window.dynamicSpecialCards.forEach(c => {
@@ -619,7 +618,7 @@
             var bImgId = cardObj.bImgId ? cardObj.bImgId.toString().trim() : '';
             var bText = cardObj.bText ? cardObj.bText.toString().trim() : '';
             
-            if (!bImgId && !bText) {
+            if (cardObj.isSpecial || (!bImgId && !bText)) {
                 var pColor = team.config.rgb;
                 var pId = team.config.id;
                 var pokeUrl = `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/${pId}.png`;
