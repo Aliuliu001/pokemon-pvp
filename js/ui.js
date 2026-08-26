@@ -23,7 +23,9 @@
                 } else if (String(id).startsWith('http') || String(id).startsWith('data:image')) {
                     return `<img src="${id}" class="w-6 h-6 object-contain pointer-events-none" onerror="this.style.display='none'"/>`;
                 }
-                return '';
+                
+                var onErrorStr = `if(this.src.endsWith('.png')){this.src='./Front-side/${id}.jpg';}else if(this.src.endsWith('.jpg')){this.src='./Front-side/${id}.jpeg';}else{this.onerror=null; this.style.display='none';}`;
+                return `<img src="./Front-side/${id}.png" class="w-6 h-6 object-contain pointer-events-none" onerror="${onErrorStr}" />`;
             };
 
             var tr = document.createElement('tr');
