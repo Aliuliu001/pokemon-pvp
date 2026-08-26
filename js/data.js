@@ -38,11 +38,10 @@ try {
     if (storedPool) {
         window.imagesPool = JSON.parse(storedPool);
         // Auto-migrate to IDB
-        window.saveImagesToIndexedDB(window.imagesPool).then(() => {
-            localStorage.removeItem('pokemonClashImagePool');
-        });
+        window.saveImagesToIndexedDB(window.imagesPool);
+        localStorage.removeItem('pokemonClashImagePool');
     }
-} catch(e) { console.warn("Failed to parse legacy imagesPool", e); }
+} catch(e) { console.warn("Failed to parse legacy imagesPool", e); localStorage.removeItem('pokemonClashImagePool'); }
 
 window.applyBackground = function() {
             var savedBg = localStorage.getItem("pokemonClashBgImage");

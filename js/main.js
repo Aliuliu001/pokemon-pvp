@@ -14,7 +14,12 @@
                     newData.push({ fId, fWord, bImgId, bText, fTime, bTime });
                 }
             }
-            localStorage.setItem('pokemonClashDataJSON', JSON.stringify(newData));
+            try {
+                localStorage.setItem('pokemonClashDataJSON', JSON.stringify(newData));
+            } catch(e) {
+                console.error("Failed to save table data:", e);
+                alert("Lỗi lưu dữ liệu: Bộ nhớ đầy! Hãy ấn 'Clear Images' để dọn dẹp hoặc upload lại ít hình hơn.");
+            }
         };
         
         window._autoSaveTimer = null;
