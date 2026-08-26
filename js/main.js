@@ -464,11 +464,16 @@
                     }
                     rIdx++;
                 }
+                if (window.saveTableData) window.saveTableData();
                 var target = e.currentTarget;
                 var orig = target.innerText; 
                 target.innerText = 'Done ✓'; 
                 target.classList.replace('bg-blue-600', 'bg-green-600');
                 setTimeout(() => { target.innerText = orig; target.classList.replace('bg-green-600', 'bg-blue-600'); }, 1500);
+            });
+
+            window.addEventListener('beforeunload', function (e) {
+                if (window.saveTableData) window.saveTableData();
             });
 
             attachBtn('btn-download-config', 'click', () => {
