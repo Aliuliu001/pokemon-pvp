@@ -1578,7 +1578,7 @@
                 window.currentHand.forEach(c => { if (!c.used) window.globalDeck.push(c); });
                 window.currentHand = []; 
                 window.globalDeck.sort(() => Math.random() - 0.5); 
-                setTimeout(() => { window.isProcessingModal = false; window.drawCards(); }, 1000);
+                setTimeout(() => { window.isProcessingModal = false; window.drawCards(); }, 200);
             }
 
             var doAction = function() {

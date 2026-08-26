@@ -278,86 +278,89 @@
                 });
             }
 
-            var uploadBtn = document.getElementById('btn-upload-images');
-            if (uploadBtn) {
-                uploadBtn.addEventListener('change', async function(e) {
-                    var files = Array.from(e.target.files).filter(f => f.type.startsWith('image/'));
-                    if (!files || files.length === 0) {
-                        var status = document.getElementById('upload-status');
-                        if (status) {
-                            status.classList.remove('hidden');
-                            status.innerText = 'No valid images found in selection.';
-                            setTimeout(() => status.classList.add('hidden'), 3000);
-                        }
-                        return;
-                    }
-
+            var handleImageUpload = async function(e) {
+                var files = Array.from(e.target.files).filter(f => f.type.startsWith('image/'));
+                if (!files || files.length === 0) {
                     var status = document.getElementById('upload-status');
-                    if(status) { status.classList.remove('hidden'); status.innerText = 'Processing 0 / ' + files.length + ' image(s)...'; }
-                    
-                    for (var i = 0; i < files.length; i++) {
-                        var file = files[i];
-                        if (status && i % 5 === 0) {
-                            status.innerText = 'Processing ' + i + ' / ' + files.length + ' image(s)...';
-                        }
-                        await new Promise((resolve) => {
-                            var reader = new FileReader();
-                            reader.onload = function(event) {
-                                var img = new Image();
-                                img.onload = function() {
-                                    var canvas = document.createElement('canvas');
-                                    var maxDim = 1500;
-                                    var width = img.width;
-                                    var height = img.height;
-                                    
-                                    if (width > height) {
-                                        if (width > maxDim) { height *= maxDim / width; width = maxDim; }
-                                    } else {
-                                        if (height > maxDim) { width *= maxDim / height; height = maxDim; }
-                                    }
-                                    
-                                    canvas.width = width;
-                                    canvas.height = height;
-                                    var ctx = canvas.getContext('2d');
-                                    ctx.drawImage(img, 0, 0, width, height);
-                                    
-                                    var base64Str = canvas.toDataURL('image/webp', 0.95);
-                                    
-                                    var fileNameNoExt = file.name.substring(0, file.name.lastIndexOf('.')) || file.name;
-                                    window.imagesPool[fileNameNoExt] = base64Str;
-                                    
-                                    resolve();
-                                };
-                                img.onerror = function() {
-                                    console.error('Failed to load image:', file.name);
-                                    resolve();
-                                };
-                                img.src = event.target.result;
-                            };
-                            reader.onerror = function() {
-                                console.error('Failed to read file:', file.name);
+                    if (status) {
+                        status.classList.remove('hidden');
+                        status.innerText = 'No valid images found in selection.';
+                        setTimeout(() => status.classList.add('hidden'), 3000);
+                    }
+                    return;
+                }
+
+                var status = document.getElementById('upload-status');
+                if(status) { status.classList.remove('hidden'); status.innerText = 'Processing 0 / ' + files.length + ' image(s)...'; }
+                
+                for (var i = 0; i < files.length; i++) {
+                    var file = files[i];
+                    if (status && i % 5 === 0) {
+                        status.innerText = 'Processing ' + i + ' / ' + files.length + ' image(s)...';
+                    }
+                    await new Promise((resolve) => {
+                        var reader = new FileReader();
+                        reader.onload = function(event) {
+                            var img = new Image();
+                            img.onload = function() {
+                                var canvas = document.createElement('canvas');
+                                var maxDim = 1500;
+                                var width = img.width;
+                                var height = img.height;
+                                
+                                if (width > height) {
+                                    if (width > maxDim) { height *= maxDim / width; width = maxDim; }
+                                } else {
+                                    if (height > maxDim) { width *= maxDim / height; height = maxDim; }
+                                }
+                                
+                                canvas.width = width;
+                                canvas.height = height;
+                                var ctx = canvas.getContext('2d');
+                                ctx.drawImage(img, 0, 0, width, height);
+                                
+                                var base64Str = canvas.toDataURL('image/webp', 0.95);
+                                
+                                var fileNameNoExt = file.name.substring(0, file.name.lastIndexOf('.')) || file.name;
+                                window.imagesPool[fileNameNoExt] = base64Str;
+                                
                                 resolve();
                             };
-                            reader.readAsDataURL(file);
-                        });
-                    }
+                            img.onerror = function() {
+                                console.error('Failed to load image:', file.name);
+                                resolve();
+                            };
+                            img.src = event.target.result;
+                        };
+                        reader.onerror = function() {
+                            console.error('Failed to read file:', file.name);
+                            resolve();
+                        };
+                        reader.readAsDataURL(file);
+                    });
+                }
 
-                    try {
-                        if (status) status.innerText = 'Saving to database...';
-                        await window.saveImagesToIndexedDB(window.imagesPool);
-                        if (status) {
-                            status.innerText = 'Saved ' + files.length + ' images to memory!';
-                            setTimeout(() => status.classList.add('hidden'), 3000);
-                        }
-                        window.buildDeck();
-                    } catch (error) {
-                        if (status) {
-                            status.innerText = 'Error: Failed to save images!';
-                            status.classList.replace('text-yellow-400', 'text-red-400');
-                        }
+                try {
+                    if (status) status.innerText = 'Saving to database...';
+                    await window.saveImagesToIndexedDB(window.imagesPool);
+                    if (status) {
+                        status.innerText = 'Saved ' + files.length + ' images to memory!';
+                        setTimeout(() => status.classList.add('hidden'), 3000);
                     }
-                });
-            }
+                    window.buildDeck();
+                } catch (error) {
+                    if (status) {
+                        status.innerText = 'Error: Failed to save images!';
+                        status.classList.replace('text-yellow-400', 'text-red-400');
+                    }
+                }
+            };
+
+            var uploadBtn = document.getElementById('btn-upload-images');
+            if (uploadBtn) uploadBtn.addEventListener('change', handleImageUpload);
+            
+            var uploadFilesBtn = document.getElementById('btn-upload-files');
+            if (uploadFilesBtn) uploadFilesBtn.addEventListener('change', handleImageUpload);
 
             attachBtn('btn-export-html', 'click', () => {
                 var exportData = [];
