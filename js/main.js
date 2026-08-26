@@ -17,6 +17,12 @@
             localStorage.setItem('pokemonClashDataJSON', JSON.stringify(newData));
         };
         
+        window._autoSaveTimer = null;
+        window.autoSaveTableData = function() {
+            clearTimeout(window._autoSaveTimer);
+            window._autoSaveTimer = setTimeout(window.saveTableData, 500);
+        };
+        
         window.isGamePaused = false;
         window._pausedTimers = { global: null, read: null, fuse: null };
 
