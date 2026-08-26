@@ -275,10 +275,10 @@
             
             var clearImgBtn = document.getElementById('btn-clear-images');
             if (clearImgBtn) {
-                clearImgBtn.addEventListener('click', function(e) {
+                clearImgBtn.addEventListener('click', async function(e) {
                     if (confirm("Are you sure you want to delete all uploaded images?")) {
                         window.imagesPool = {};
-                        window.saveImagesToIndexedDB({});
+                        if (window.clearIndexedDB) await window.clearIndexedDB();
                         localStorage.removeItem('pokemonClashImagePool');
                         var target = e.currentTarget;
                         var orig = target.innerText;

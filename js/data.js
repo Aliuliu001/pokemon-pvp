@@ -12,9 +12,24 @@ window.loadImagesFromIndexedDB = function() {
             const db = e.target.result;
             if (!db.objectStoreNames.contains('images')) { resolve({}); return; }
             const tx = db.transaction('images', 'readonly');
-            const getReq = tx.objectStore('images').get('imagePool');
-            getReq.onsuccess = () => resolve(getReq.result || {});
-            getReq.onerror = () => resolve({});
+            const store = tx.objectStore('images');
+            const pool = {};
+            
+            const cursorReq = store.openCursor();
+            cursorReq.onsuccess = (event) => {
+                const cursor = event.target.result;
+                if (cursor) {
+                    if (cursor.key === 'imagePool') {
+                        Object.assign(pool, cursor.value); // legacy support
+                    } else {
+                        pool[cursor.key] = cursor.value;
+                    }
+                    cursor.continue();
+                } else {
+                    resolve(pool);
+                }
+            };
+            cursorReq.onerror = () => resolve({});
         };
         req.onerror = () => resolve({});
     });
@@ -26,9 +41,32 @@ window.saveImagesToIndexedDB = function(pool) {
         req.onsuccess = (e) => {
             const db = e.target.result;
             const tx = db.transaction('images', 'readwrite');
-            tx.objectStore('images').put(pool, 'imagePool');
+            
+            tx.onerror = (err) => { console.error("IDB save error:", err); resolve(); };
+            tx.onabort = (err) => { console.error("IDB save aborted:", err); resolve(); };
+            
+            const store = tx.objectStore('images');
+            for (let key in pool) {
+                store.put(pool[key], key);
+            }
+            store.delete('imagePool'); // clean up legacy giant object
+            
             tx.oncomplete = () => resolve();
         };
+        req.onerror = () => resolve();
+    });
+};
+
+window.clearIndexedDB = function() {
+    return new Promise((resolve) => {
+        const req = indexedDB.open('PokemonClashDB', 1);
+        req.onsuccess = (e) => {
+            const db = e.target.result;
+            const tx = db.transaction('images', 'readwrite');
+            tx.objectStore('images').clear();
+            tx.oncomplete = () => resolve();
+        };
+        req.onerror = () => resolve();
     });
 };
 
