@@ -520,12 +520,12 @@
                         if(statusElNode) {
                             statusElNode.innerHTML = `<span class="bg-red-600/90 px-8 py-4 rounded-3xl border-4 border-red-300 text-white drop-shadow-[0_0_20px_rgba(220,38,38,1)]">ALL WRONG! BOOM!</span>`;
                             statusElNode.classList.remove('hidden');
-                            setTimeout(() => statusElNode.classList.add('hidden'), 2500);
+                            setTimeout(() => statusElNode.classList.add('hidden'), window.EFFECT_SETTINGS.explosionDelayMs);
                         }
                         
                         setTimeout(() => {
                             if (!window.isGameOver) { if(window.processNextTurn) window.processNextTurn(); }
-                        }, 3000);
+                        }, window.EFFECT_SETTINGS.explosionDelayMs);
                     } else {
                         window.playSound('defuse'); 
                         if (!window.isSpecialModeActive) {
@@ -1021,7 +1021,7 @@
             }
 
             window.triggerAvatarFX(teamId, false);
-            setTimeout(() => { base.classList.remove('shake-screen'); c.remove(); r.remove(); }, 1500);
+            setTimeout(() => { base.classList.remove('shake-screen'); c.remove(); r.remove(); }, window.EFFECT_SETTINGS.explosionDelayMs);
         };
 
         window.triggerHeal = function(teamId) {

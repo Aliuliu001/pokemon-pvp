@@ -138,7 +138,7 @@ window.applyBackground = function() {
             { id: 'SABOTAGE', type: 'attack', name: 'SABOTAGE', icon: '💣', shortDesc: '[GÀI BOM ĐỊCH]', note: 'Gài bom ẩn. Quả bom sẽ nổ bồi thêm -1 HP vào lần tiếp theo địch bị mất máu.', count: 1, hasValue: false, hasValue2: false }
         ];
 
-        window.EFFECT_SETTINGS = { explosionDelayMs: 1500, freezeDelayMs: 1500 };
+        window.EFFECT_SETTINGS = { explosionDelayMs: 800, freezeDelayMs: 800 };
         window.AVATAR_SETTINGS = { happyEffectEnabled: true, sadEffectEnabled: true };
 
         window.DEFAULT_JSON_DATA = [
