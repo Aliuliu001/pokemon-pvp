@@ -215,7 +215,7 @@
                     <div class="flex items-center gap-2">
                         <label class="px-3 py-1.5 bg-blue-600 hover:bg-blue-500 text-white rounded cursor-pointer font-semibold text-xs transition-colors shadow-lg shrink-0 flex items-center">
                             Upload Images
-                            <input type="file" id="btn-upload-images" class="hidden" multiple accept="image/*">
+                            <input type="file" id="btn-upload-images" class="hidden" multiple accept="image/*" webkitdirectory directory>
                         </label>
                         <button id="btn-clear-images" class="px-3 py-1.5 bg-red-600 hover:bg-red-500 text-white rounded font-semibold text-xs transition-colors shrink-0">Clear Pool</button>
                         <span id="upload-status" class="text-yellow-400 text-xs hidden"></span>
@@ -461,6 +461,6 @@
     <script src="js/data.js?v=9992"></script>
     <script src="js/ui.js?v=9992"></script>
     <script src="js/logic.js?v=9995"></script>
-    <script src="js/main.js?v=9998"></script>
+    <script src="js/main.js?v=9999"></script>
 </body>
 </html>

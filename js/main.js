@@ -280,17 +280,27 @@
 
             var uploadBtn = document.getElementById('btn-upload-images');
             if (uploadBtn) {
-                uploadBtn.addEventListener('change', function(e) {
-                    var files = e.target.files;
-                    if (!files || files.length === 0) return;
+                uploadBtn.addEventListener('change', async function(e) {
+                    var files = Array.from(e.target.files).filter(f => f.type.startsWith('image/'));
+                    if (!files || files.length === 0) {
+                        var status = document.getElementById('upload-status');
+                        if (status) {
+                            status.classList.remove('hidden');
+                            status.innerText = 'No valid images found in selection.';
+                            setTimeout(() => status.classList.add('hidden'), 3000);
+                        }
+                        return;
+                    }
 
-                    
                     var status = document.getElementById('upload-status');
-                    if(status) { status.classList.remove('hidden'); status.innerText = 'Processing ' + files.length + ' image(s)...'; }
+                    if(status) { status.classList.remove('hidden'); status.innerText = 'Processing 0 / ' + files.length + ' image(s)...'; }
                     
-                    var processedCount = 0;
                     for (var i = 0; i < files.length; i++) {
-                        (function(file) {
+                        var file = files[i];
+                        if (status && i % 5 === 0) {
+                            status.innerText = 'Processing ' + i + ' / ' + files.length + ' image(s)...';
+                        }
+                        await new Promise((resolve) => {
                             var reader = new FileReader();
                             reader.onload = function(event) {
                                 var img = new Image();
@@ -316,35 +326,35 @@
                                     var fileNameNoExt = file.name.substring(0, file.name.lastIndexOf('.')) || file.name;
                                     window.imagesPool[fileNameNoExt] = base64Str;
                                     
-                                    processedCount++;
-                                    checkDone();
+                                    resolve();
                                 };
                                 img.onerror = function() {
                                     console.error('Failed to load image:', file.name);
-                                    processedCount++;
-                                    checkDone();
+                                    resolve();
                                 };
                                 img.src = event.target.result;
                             };
                             reader.onerror = function() {
                                 console.error('Failed to read file:', file.name);
-                                processedCount++;
-                                checkDone();
+                                resolve();
                             };
-                            
-                            function checkDone() {
-                                if (processedCount === files.length) {
-                                    window.saveImagesToIndexedDB(window.imagesPool).then(() => {
-                                        if(status) { status.innerText = 'Saved ' + files.length + ' images to memory!'; setTimeout(() => status.classList.add('hidden'), 3000); }
-                                        window.buildDeck();
-                                    }).catch(() => {
-                                        if(status) { status.innerText = 'Error: Failed to save images!'; status.classList.replace('text-yellow-400', 'text-red-400'); }
-                                    });
-                                }
-                            }
-                            
                             reader.readAsDataURL(file);
-                        })(files[i]);
+                        });
+                    }
+
+                    try {
+                        if (status) status.innerText = 'Saving to database...';
+                        await window.saveImagesToIndexedDB(window.imagesPool);
+                        if (status) {
+                            status.innerText = 'Saved ' + files.length + ' images to memory!';
+                            setTimeout(() => status.classList.add('hidden'), 3000);
+                        }
+                        window.buildDeck();
+                    } catch (error) {
+                        if (status) {
+                            status.innerText = 'Error: Failed to save images!';
+                            status.classList.replace('text-yellow-400', 'text-red-400');
+                        }
                     }
                 });
             }
