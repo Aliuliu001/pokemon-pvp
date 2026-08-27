@@ -288,7 +288,7 @@
             
             var btn = document.createElement('button');
             btn.id = 'bonus-card-btn';
-            btn.className = "galaxy-bg relative h-full aspect-[4/3] rounded-xl md:rounded-2xl flex flex-col items-center justify-center text-white shadow-[0_0_30px_rgba(139,92,246,0.6)] border-4 border-indigo-400/50 hover:scale-105 transition-transform shrink-0 cursor-pointer ml-2 md:ml-4 group card-appear";
+            btn.className = "galaxy-bg relative flex-1 w-full max-w-[320px] max-h-[100%] aspect-[4/3] rounded-xl md:rounded-2xl flex flex-col items-center justify-center text-white shadow-[0_0_30px_rgba(139,92,246,0.6)] border-4 border-indigo-400/50 hover:scale-105 transition-transform shrink-0 cursor-pointer md:ml-2 group card-appear";
             
             var frozenHtml = '';
             if (window.isSpecialModeActive && window.SKILL_ON_MYSTIC_ONLY) {
@@ -422,7 +422,7 @@
             
             var existingBtn = document.getElementById('bonus-card-btn');
             
-            var card = document.createElement('div'); card.className = 'card h-full aspect-[4/3] perspective cursor-pointer card-appear';
+            var card = document.createElement('div'); card.className = 'card flex-1 w-full max-w-[320px] max-h-[100%] aspect-[4/3] perspective cursor-pointer card-appear shrink-0';
             var inner = document.createElement('div'); inner.className = 'card-inner w-full h-full relative transform-style-3d shadow-xl transition-transform duration-500';
             
             var extraClass = cardObj.isSpecial ? 'special-aura' : '';
