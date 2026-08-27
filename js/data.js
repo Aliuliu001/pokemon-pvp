@@ -43,7 +43,7 @@ window.saveImagesToIndexedDB = function(pool) {
             const tx = db.transaction('images', 'readwrite');
             
             tx.onerror = (err) => { console.error("IDB save error:", err); resolve(); };
-            tx.onabort = (err) => { console.error("IDB save aborted:", err); resolve(); };
+            tx.onabort = (err) => { alert("Lỗi: Trình duyệt từ chối lưu bộ ảnh vào ổ cứng (Transaction Aborted). Điều này khiến ảnh bị mất khi F5."); console.error("IDB save aborted:", err); resolve(); };
             
             const store = tx.objectStore('images');
             for (let key in pool) {
