@@ -229,3 +229,59 @@
 .animate-mystic-glow {
     animation: mysticGlow 1.5s ease-in-out infinite;
 }
+
+/* ===== KHO ẢNH (skill game-image-upload) ===== */
+.pool-thumb {
+    position: relative;
+    background: #0f172a;
+    border: 2px solid #334155;
+    border-radius: 8px;
+    padding: 4px;
+    cursor: pointer;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 2px;
+    transition: border-color .15s, transform .15s;
+}
+.pool-thumb:hover { border-color: #2dd4bf; transform: translateY(-2px); }
+.pool-thumb.selected { border-color: #f59e0b; box-shadow: 0 0 0 2px rgba(245, 158, 11, .6); }
+.pool-thumb img { width: 100%; height: 48px; object-fit: contain; pointer-events: none; }
+.pool-thumb-id {
+    font-size: 10px;
+    font-weight: 800;
+    color: #5eead4;
+    max-width: 100%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+.pool-thumb-del {
+    position: absolute;
+    top: -6px;
+    right: -6px;
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    background: #dc2626;
+    color: #fff;
+    border: 1px solid #fff;
+    font-size: 12px;
+    line-height: 1;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+}
+.pool-thumb:hover .pool-thumb-del { display: flex; }
+
+/* Ô ID chưa có ảnh trong kho → viền đỏ nhấp nháy */
+@keyframes idMissingBlink {
+    0%, 100% { box-shadow: inset 0 0 0 2px rgba(239, 68, 68, .95); }
+    50% { box-shadow: inset 0 0 0 2px rgba(239, 68, 68, .15); }
+}
+.img-id-missing { animation: idMissingBlink 1.1s infinite; border-radius: 4px; }
+
+/* Kéo thả ảnh vào khung cài đặt */
+#settings-modal.drop-active { outline: 4px dashed #2dd4bf; outline-offset: -12px; }
+#settings-modal.drop-active > div { border-color: #2dd4bf !important; }

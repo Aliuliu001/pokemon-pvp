@@ -178,17 +178,21 @@ window.applyBackground = function() {
         window.EFFECT_SETTINGS = { explosionDelayMs: 800, freezeDelayMs: 800 };
         window.AVATAR_SETTINGS = { happyEffectEnabled: true, sadEffectEnabled: true };
 
+        // Data mẫu: CHỦ ĐỘNG bỏ trống 2 cột ID ảnh (fId, bImgId) theo skill
+        // game-image-upload — nếu ghi sẵn ID mà chưa có ảnh, mở game lên sẽ
+        // đầy ô "Missing". Anh tự upload ảnh (đặt tên 1.png, 2.png...) rồi
+        // dùng nút 🪄 Auto Fill điền ID là ảnh hiện ngay.
         window.DEFAULT_JSON_DATA = [
-            {fId: '1', fWord: 'Snail', bImgId: '1', bText: 'Stand up', bTime: '10'}, 
-            {fId: '2', fWord: 'Seahorse', bImgId: '', bText: 'Open the book', bTime: '15'}, 
-            {fId: '3', fWord: 'Jellyfish', bImgId: '3', bText: 'Close the book', bTime: ''}, 
-            {fId: '4', fWord: 'Eel', bImgId: '', bText: 'What is it?', bTime: ''}, 
-            {fId: '5', fWord: 'Starfish', bImgId: '5', bText: "It's a book.", bTime: '5'},
-            {fId: '6', fWord: 'Parrot', bImgId: '6', bText: 'Look, a butterfly!', bTime: '20'},
-            {fId: '7', fWord: 'Snake', bImgId: '7', bText: 'Wow!', bTime: '8'},
-            {fId: '8', fWord: 'Shark', bImgId: '8', bText: 'Sit down Misty.', bTime: ''},
-            {fId: '9', fWord: 'Dolphin', bImgId: '9', bText: 'Close your eyes.', bTime: '12'},
-            {fId: '10', fWord: 'Hamster', bImgId: '10', bText: 'Sit here please, butterfly', bTime: ''}
+            {fId: '', fWord: 'Snail', bImgId: '', bText: 'Stand up', bTime: '10'}, 
+            {fId: '', fWord: 'Seahorse', bImgId: '', bText: 'Open the book', bTime: '15'}, 
+            {fId: '', fWord: 'Jellyfish', bImgId: '', bText: 'Close the book', bTime: ''}, 
+            {fId: '', fWord: 'Eel', bImgId: '', bText: 'What is it?', bTime: ''}, 
+            {fId: '', fWord: 'Starfish', bImgId: '', bText: "It's a book.", bTime: '5'}, 
+            {fId: '', fWord: 'Parrot', bImgId: '', bText: 'Look, a butterfly!', bTime: '20'}, 
+            {fId: '', fWord: 'Snake', bImgId: '', bText: 'Wow!', bTime: '8'}, 
+            {fId: '', fWord: 'Shark', bImgId: '', bText: 'Sit down Misty.', bTime: ''}, 
+            {fId: '', fWord: 'Dolphin', bImgId: '', bText: 'Close your eyes.', bTime: '12'}, 
+            {fId: '', fWord: 'Hamster', bImgId: '', bText: 'Sit here please, butterfly', bTime: ''}
         ];
 
         window.globalDeck = []; 

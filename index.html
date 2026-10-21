@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Pokemon Castle Battle</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="stylesheet" href="style.css?v=9995">
+    <link rel="stylesheet" href="style.css?v=9996">
 </head>
 <body class="p-1 md:p-2 pb-6 flex flex-col items-center relative min-h-screen overflow-x-hidden">
 
@@ -212,19 +212,25 @@
 
             <div class="flex flex-col xl:flex-row justify-between items-start xl:items-end gap-3 mb-3 shrink-0">
                 <div class="flex flex-col gap-1 w-full xl:w-auto">
-                    <div class="flex items-center gap-2">
-                        <label class="px-3 py-1.5 bg-indigo-600 hover:bg-indigo-500 text-white rounded cursor-pointer font-semibold text-xs transition-colors shadow-lg shrink-0 flex items-center" title="Select specific files">
-                            Upload Files
+                    <div class="flex items-center gap-2 flex-wrap">
+                        <label class="px-3 py-1.5 bg-indigo-600 hover:bg-indigo-500 text-white rounded cursor-pointer font-semibold text-xs transition-colors shadow-lg shrink-0 flex items-center" title="Chọn từng file ảnh">
+                            ⬆️ Upload Files
                             <input type="file" id="btn-upload-files" class="hidden" multiple accept="image/*">
                         </label>
-                        <label class="px-3 py-1.5 bg-blue-600 hover:bg-blue-500 text-white rounded cursor-pointer font-semibold text-xs transition-colors shadow-lg shrink-0 flex items-center" title="Select an entire folder">
-                            Upload Folder
+                        <label class="px-3 py-1.5 bg-blue-600 hover:bg-blue-500 text-white rounded cursor-pointer font-semibold text-xs transition-colors shadow-lg shrink-0 flex items-center" title="Chọn cả thư mục ảnh">
+                            📁 Upload Folder
                             <input type="file" id="btn-upload-images" class="hidden" multiple accept="image/*" webkitdirectory directory>
                         </label>
-                        <button id="btn-clear-images" class="px-3 py-1.5 bg-red-600 hover:bg-red-500 text-white rounded font-semibold text-xs transition-colors shrink-0">Clear Pool</button>
+                        <button id="btn-toggle-gallery" class="px-3 py-1.5 bg-teal-700 hover:bg-teal-600 text-white rounded font-semibold text-xs transition-colors shrink-0" title="Xem toàn bộ ảnh trong kho">🖼️ Kho ảnh</button>
+                        <button id="btn-clear-images" class="px-3 py-1.5 bg-red-600 hover:bg-red-500 text-white rounded font-semibold text-xs transition-colors shrink-0" title="Xóa hết ảnh trong kho">🗑️ Xóa hết ảnh</button>
+                        <span id="image-pool-count" class="text-teal-400 font-black text-xs whitespace-nowrap">0 ảnh</span>
+                        <span id="image-pool-size" class="text-slate-400 text-xs whitespace-nowrap">📦 0 B</span>
+                        <button id="btn-backup" class="px-3 py-1.5 bg-indigo-600 hover:bg-indigo-500 text-white rounded font-semibold text-xs transition-colors shrink-0" title="Tải file sao lưu (bảng + cài đặt + toàn bộ kho ảnh) về máy">💾 Tải bản sao lưu</button>
+                        <button id="btn-restore" class="px-3 py-1.5 bg-amber-600 hover:bg-amber-500 text-white rounded font-semibold text-xs transition-colors shrink-0" title="Khôi phục từ file sao lưu đã tải trước đó">📂 Khôi phục từ file</button>
+                        <input type="file" id="restore-file-input" accept=".json,application/json" class="hidden">
                         <span id="upload-status" class="text-yellow-400 text-xs hidden"></span>
                     </div>
-                    <p class="text-[10px] sm:text-xs text-slate-400 leading-tight">Images saved as WebP in LocalStorage (Max 5MB).</p>
+                    <p class="text-[10px] sm:text-xs text-slate-400 leading-tight">Ảnh nén WebP, lưu trong IndexedDB (không giới hạn 5MB). Có thể kéo thả ảnh vào khung này.</p>
                     <p class="text-slate-300 text-[10px] sm:text-xs mt-1">Paste Excel data below. <b class="text-yellow-400">Note:</b> Empty Time = No bomb timer.</p>
                 </div>
                 
@@ -263,6 +269,25 @@
                 </div>
             </div>
             
+            <!-- BẢNG THUMBNAIL KHO ẢNH -->
+            <div id="image-pool-panel" class="hidden bg-slate-900/70 p-3 rounded-xl border border-teal-600/40 mb-3">
+                <div class="flex items-center justify-between gap-2 mb-2 flex-wrap">
+                    <div class="flex items-center gap-3 flex-wrap">
+                        <span class="text-teal-400 font-bold text-xs uppercase tracking-wider">🖼️ Kho ảnh của bài</span>
+                        <span id="missing-ids-warning" class="hidden text-red-400 text-xs font-black"></span>
+                    </div>
+                    <div class="flex items-center gap-2 flex-wrap">
+                        <label class="text-slate-300 text-xs flex items-center gap-1 cursor-pointer select-none">
+                            <input type="checkbox" id="gallery-select-all" class="w-3.5 h-3.5 accent-teal-500"> Chọn tất cả
+                        </label>
+                        <button id="btn-delete-selected" class="px-3 py-1 bg-red-600 hover:bg-red-500 text-white rounded text-xs font-bold transition-colors">🗑️ Xóa đã chọn</button>
+                        <button id="btn-close-gallery" class="px-3 py-1 bg-slate-600 hover:bg-slate-500 text-white rounded text-xs font-bold transition-colors">Đóng</button>
+                    </div>
+                </div>
+                <p class="text-slate-400 text-[10px] mb-2">ID ảnh = tên file bỏ đuôi (VD: file <b>12.PNG</b> → ID <b>12</b>). Bấm vào ảnh để chọn (viền cam), bấm ✕ để xóa 1 ảnh.</p>
+                <div id="image-pool-gallery" class="grid grid-cols-4 sm:grid-cols-6 md:grid-cols-8 gap-2 max-h-64 overflow-y-auto p-1"></div>
+            </div>
+
             <div class="flex-1 overflow-y-auto overflow-x-hidden custom-scrollbar bg-slate-900 border border-slate-600 rounded-xl relative mt-2">
                 <table class="w-full text-left text-sm text-slate-300 border-collapse table-fixed">
                     <thead class="sticky top-0 bg-slate-700 text-xs uppercase shadow-md z-10">
@@ -462,9 +487,11 @@
         </div>
     </div>
 
-    <script src="js/data.js?v=10008"></script>
-    <script src="js/ui.js?v=10008"></script>
-    <script src="js/logic.js?v=10008"></script>
-    <script src="js/main.js?v=10008"></script>
+    <script src="js/safe.js?v=10009"></script>
+    <script src="js/data.js?v=10009"></script>
+    <script src="js/ui.js?v=10009"></script>
+    <script src="js/logic.js?v=10009"></script>
+    <script src="js/main.js?v=10009"></script>
+    <script src="js/khoanh.js?v=10009"></script>
 </body>
 </html>
